@@ -1,0 +1,10 @@
+# Git
+.git
+.gitignore
+# Misc
+README.md
+LICENSE
+# Node
+node_modules
+npm-debug.log
+
