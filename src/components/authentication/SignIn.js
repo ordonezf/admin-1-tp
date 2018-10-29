@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from '@material-ui/core/Button'
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -19,7 +20,7 @@ const styles = theme => ({
     textField: {
       flexBasis: 200,
     },
-  });
+});
 
 class SignIn extends React.Component {
     state = {
@@ -39,37 +40,44 @@ class SignIn extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <div className={classes.root}>
-                <TextField
-                    id="outlined-name"
-                    label="Name"
-                    className={classes.textField}
-                    value={this.state.name}
-                    onChange={this.handleChange('name')}
-                    margin="normal"
-                    variant="outlined"
-                />
-                <TextField
-                    id="outlined-adornment-password"
-                    className={classNames(classes.margin, classes.textField)}
-                    variant="outlined"
-                    type={this.state.showPassword ? 'text' : 'password'}
-                    label="Password"
-                    value={this.state.password}
-                    onChange={this.handleChange('password')}
-                    InputProps={{
-                        endAdornment: (
-                        <InputAdornment position="end">
-                            <IconButton
-                            aria-label="Toggle password visibility"
-                            onClick={this.handleClickShowPassword}
-                            >
-                            {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButton>
-                        </InputAdornment>
-                        ),
-                    }}
-                />
+            <div>
+                <div>
+                    <TextField
+                        id="outlined-name"
+                        label="Name"
+                        className={classNames(classes.margin, classes.textField)}
+                        value={this.state.name}
+                        onChange={this.handleChange('name')}
+                        margin="normal"
+                        variant="outlined"
+                    />
+                </div>
+                <div>
+                    <TextField
+                        id="outlined-adornment-password"
+                        className={classNames(classes.margin, classes.textField)}
+                        variant="outlined"
+                        type={this.state.showPassword ? 'text' : 'password'}
+                        label="Password"
+                        value={this.state.password}
+                        onChange={this.handleChange('password')}
+                        InputProps={{
+                            endAdornment: (
+                            <InputAdornment position="end">
+                                <IconButton
+                                aria-label="Toggle password visibility"
+                                onClick={this.handleClickShowPassword}
+                                >
+                                {this.state.showPassword ? <VisibilityOff /> : <Visibility />}
+                                </IconButton>
+                            </InputAdornment>
+                            ),
+                        }}
+                    />
+                </div>
+                <Button variant="contained" color="primary" className={classes.margin}>
+                    Login
+                </Button>
             </div>
         )
     }
