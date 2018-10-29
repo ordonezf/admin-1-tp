@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './components/authentication/App';
 import * as serviceWorker from './serviceWorker';
+import SignIn from './components/authentication/SignIn';
+import NavBar from './components/navbar/NavBar';
 
 ReactDOM.render(
-    <App />,
+    <div>
+        <NavBar />
+        <SignIn />
+    </div>,
     document.getElementById('root')
 );
 
