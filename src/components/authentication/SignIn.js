@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button'
+import Card from '@material-ui/core/Card';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -8,12 +9,11 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import { CardContent, CardActions, CardHeader } from '@material-ui/core';
+
+import './SignIn.css'
 
 const styles = theme => ({
-    root: {
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
     margin: {
       margin: theme.spacing.unit,
     },
@@ -40,8 +40,9 @@ class SignIn extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <div>
-                <div>
+            <Card className="base">
+                <CardHeader title="Sign In" />
+                <CardContent>
                     <TextField
                         id="outlined-name"
                         label="Name"
@@ -49,14 +50,11 @@ class SignIn extends React.Component {
                         value={this.state.name}
                         onChange={this.handleChange('name')}
                         margin="normal"
-                        variant="outlined"
                     />
-                </div>
-                <div>
+                    <br />
                     <TextField
                         id="outlined-adornment-password"
                         className={classNames(classes.margin, classes.textField)}
-                        variant="outlined"
                         type={this.state.showPassword ? 'text' : 'password'}
                         label="Password"
                         value={this.state.password}
@@ -74,11 +72,13 @@ class SignIn extends React.Component {
                             ),
                         }}
                     />
-                </div>
-                <Button variant="contained" color="primary" className={classes.margin}>
-                    Login
-                </Button>
-            </div>
+                </CardContent>
+                <CardActions>
+                    <Button variant="contained" color="primary" className={classes.margin}>
+                        Login
+                    </Button>
+                </CardActions>
+            </Card>
         )
     }
 }
