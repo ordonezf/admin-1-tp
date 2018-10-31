@@ -4,6 +4,7 @@ import './index.css';
 import * as serviceWorker from './serviceWorker';
 import SignIn from './components/authentication/SignIn';
 import NavBar from './components/navbar/NavBar';
+import AppointmentList from './components/controls/AppointmentList';
 
 ReactDOM.render(
     <div>
