@@ -12,8 +12,6 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 
-import './SignIn.css'
-
 const styles = theme => ({
     margin: {
       margin: theme.spacing.unit,
@@ -23,9 +21,12 @@ const styles = theme => ({
     },
 });
 
-class SignIn extends React.Component {
+class SignUp extends React.Component {
     state = {
-        name: '',
+        firstName: '',
+        lastName: '',
+        birthday: '',
+        username: '',
         password: '',
         showPassword: false,
       };
@@ -42,7 +43,7 @@ class SignIn extends React.Component {
         const { classes } = this.props;
         return (
             <Card className="base">
-                <CardHeader title="Sign In" />
+                <CardHeader title="Sign Up" />
                 <CardContent>
                     <TextField
                         id="outlined-name"
@@ -76,10 +77,10 @@ class SignIn extends React.Component {
                 </CardContent>
                 <CardActions>
                     <Button variant="contained" color="primary" className={classes.margin}>
-                        Login
+                        Register
                     </Button>
                     <Button className={classes.margin}>
-                        <Link to="/signup">Not a member? Sign up</Link>
+                        <Link to="/">Already a member? Sign in</Link>
                     </Button>
                 </CardActions>
             </Card>
@@ -87,8 +88,8 @@ class SignIn extends React.Component {
     }
 }
 
-SignIn.propTypes = {
+SignUp.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SignIn);
+export default withStyles(styles)(SignUp);
