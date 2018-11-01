@@ -1,16 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import SignIn from './components/authentication/SignIn';
-import NavBar from './components/navbar/NavBar';
-import AppointmentList from './components/controls/AppointmentList';
+import App from './components/app/App'
 
 ReactDOM.render(
-    <div>
-        <NavBar />
-        <SignIn />
-    </div>,
+    <App />,
     document.getElementById('root')
 );
 
