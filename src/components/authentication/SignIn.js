@@ -12,14 +12,19 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 
-import './SignIn.css'
-
 const styles = theme => ({
     margin: {
       margin: theme.spacing.unit,
     },
+    base : {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        'transform': 'translate(-50%, -50%)',
+    },
     textField: {
       flexBasis: 200,
+      width: '100%',
     },
 });
 
@@ -41,7 +46,7 @@ class SignIn extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <Card className="base">
+            <Card className={classNames(classes.base)}>
                 <CardHeader title="Sign In" />
                 <CardContent>
                     <TextField

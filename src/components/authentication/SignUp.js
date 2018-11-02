@@ -16,8 +16,15 @@ const styles = theme => ({
     margin: {
       margin: theme.spacing.unit,
     },
+    base : {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        'transform': 'translate(-50%, -50%)',
+    },
     textField: {
       flexBasis: 200,
+      width: '100%',
     },
 });
 
@@ -42,7 +49,7 @@ class SignUp extends React.Component {
     render() {
         const { classes } = this.props;
         return (
-            <Card className="base">
+            <Card className={classNames(classes.base)}>
                 <CardHeader title="Sign Up" />
                 <CardContent>
                     <TextField
