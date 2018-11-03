@@ -16,16 +16,25 @@ const styles = theme => ({
     margin: {
       margin: theme.spacing.unit,
     },
+    base : {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        'transform': 'translate(-50%, -50%)',
+    },
     textField: {
       flexBasis: 200,
+      width: '100%',
     },
 });
 
 class SignUp extends React.Component {
     state = {
+        dni: '',
         firstName: '',
         lastName: '',
         birthday: '',
+        mail: '',
         username: '',
         password: '',
         showPassword: false,
@@ -39,23 +48,27 @@ class SignUp extends React.Component {
         this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
+    handleRegister = () => {
+        console.log(this.state)
+    };
+
     render() {
         const { classes } = this.props;
         return (
-            <Card className="base">
+            <Card className={classNames(classes.base)}>
                 <CardHeader title="Sign Up" />
                 <CardContent>
                     <TextField
-                        id="outlined-name"
-                        label="Name"
+                        id="username"
+                        label="Username"
                         className={classNames(classes.margin, classes.textField)}
-                        value={this.state.name}
-                        onChange={this.handleChange('name')}
+                        value={this.state.username}
+                        onChange={this.handleChange('username')}
                         margin="normal"
                     />
                     <br />
                     <TextField
-                        id="outlined-adornment-password"
+                        id="adornment-password"
                         className={classNames(classes.margin, classes.textField)}
                         type={this.state.showPassword ? 'text' : 'password'}
                         label="Password"
@@ -74,9 +87,58 @@ class SignUp extends React.Component {
                             ),
                         }}
                     />
+                    <TextField
+                        id="dni"
+                        label="DNI"
+                        type="number"
+                        className={classNames(classes.margin, classes.textField)}
+                        value={this.state.dni}
+                        onChange={this.handleChange('dni')}
+                        margin="normal"
+                    />
+                    <TextField
+                        id="first-name"
+                        label="First name"
+                        className={classNames(classes.margin, classes.textField)}
+                        value={this.state.firstName}
+                        onChange={this.handleChange('firstName')}
+                        margin="normal"
+                    />
+                    <br />
+                    <TextField
+                        id="last-name"
+                        label="Last name"
+                        className={classNames(classes.margin, classes.textField)}
+                        value={this.state.lastName}
+                        onChange={this.handleChange('lastName')}
+                        margin="normal"
+                    />
+                    <br />
+                    <TextField
+                        id="birthday"
+                        label="Birthday"
+                        type="date"
+                        className={classNames(classes.margin, classes.textField)}
+                        value={this.state.birthday}
+                        onChange={this.handleChange('birthday')}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <br />
+                    <TextField
+                        id="mail"
+                        label="Mail"
+                        type="email"
+                        className={classNames(classes.margin, classes.textField)}
+                        value={this.state.mail}
+                        onChange={this.handleChange('mail')}
+                        margin="normal"
+                    />
                 </CardContent>
                 <CardActions>
-                    <Button variant="contained" color="primary" className={classes.margin}>
+                    <Button variant="contained" color="primary" className={classes.margin} onClick={this.handleRegister}>
                         Register
                     </Button>
                     <Button className={classes.margin}>
