@@ -1,5 +1,4 @@
 import React from 'react';
-import Card from '@material-ui/core/Card';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import SearchBar from 'material-ui-search-bar';
@@ -13,32 +12,16 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
-    base : {
-        margin: 'auto',
+    searchbarContainer : {
+        margin: '1em auto',
         width: '50%',
-        // position: 'fixed',
-        // top: '50%',
-        // left: '50%',
-        // 'transform': 'translate(-50%, -50%)',
     },
-    margin: {
-      margin: theme.spacing.unit,
-    },
-    textField: {
-      flexBasis: 200,
-    },
-    root: {
+    tableContainer: {
         width: '100%',
         marginTop: theme.spacing.unit * 3,
-    },
-    tableWrapper: {
         overflow: 'auto',
     },
 });
-
-var cardStyle = {
-    width: '60%',
-}
 
 class SearchTurns extends React.Component {
     state = {
@@ -72,19 +55,18 @@ class SearchTurns extends React.Component {
 
       return (
         <div>
-            <Card className={classes.base} style={cardStyle}>
+            <Paper className={classes.searchbarContainer}>
                 <SearchBar
                     value={this.state.value}
-                    placeholder="Buscar Turno..."
+                    placeholder="Buscar medico..."
                     onChange={(newValue) => this.setState({ value: newValue })}
                     onRequestSearch={() => this.handleSearch(this.state.value)}
                 />
-            </Card>
+            </Paper>
   
             {results &&
-                (<Paper className={classes.root}>
-                    <div className={classes.tableWrapper}>
-                        <Table className={classes.table}>
+                (<Paper className={classes.tableContainer}>
+                    <Table className={classes.table}>
                         <TableHead>
                             <TableRow>
                                 <TableCell>#</TableCell>
@@ -114,7 +96,6 @@ class SearchTurns extends React.Component {
                         })}
                         </TableBody>
                     </Table>
-                    </div>
                 </Paper>
             )}
 
