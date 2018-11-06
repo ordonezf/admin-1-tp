@@ -27,9 +27,8 @@ class DataBase(object):
             return conn
         except Error as e:
             print(e)
-     
-        return None
 
+        return None
 
     def create_table(self, table_name, create_table_sql):
         """ create a table from the create_table_sql statement
