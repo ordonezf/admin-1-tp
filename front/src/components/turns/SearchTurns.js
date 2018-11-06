@@ -17,10 +17,12 @@ const styles = theme => ({
         width: '50%',
     },
     tableContainer: {
-        width: '100%',
-        marginTop: theme.spacing.unit * 3,
-        overflow: 'auto',
+        width: '95%',
+        margin: 'auto',
     },
+    table: {
+        overflow: 'auto',
+    }
 });
 
 class SearchTurns extends React.Component {
@@ -31,8 +33,7 @@ class SearchTurns extends React.Component {
 
     handleSearch = async (value) => {
         let results;
-        
-        let url = 'url del backend'
+        //let url = 'url del backend'
         try {
             results = await axios.get('https://jsonplaceholder.typicode.com/users');
             //results = await axios.get(url + this.state.value);
