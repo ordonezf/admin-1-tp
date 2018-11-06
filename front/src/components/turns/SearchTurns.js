@@ -32,8 +32,10 @@ class SearchTurns extends React.Component {
     handleSearch = async (value) => {
         let results;
         
+        let url = 'url del backend'
         try {
             results = await axios.get('https://jsonplaceholder.typicode.com/users');
+            //results = await axios.get(url + this.state.value);
         } catch(err) {
             console.log(err);
         }
@@ -73,7 +75,6 @@ class SearchTurns extends React.Component {
                                 <TableCell>Práctica</TableCell>
                                 <TableCell>Médico</TableCell>
                                 <TableCell>Horario</TableCell>
-                                <TableCell>Phone</TableCell>
                                 <TableCell>Anotarse</TableCell>
                             </TableRow>
                         </TableHead>
@@ -82,10 +83,9 @@ class SearchTurns extends React.Component {
                             return (
                             <TableRow key={row.id}>
                                 <TableCell component="th" scope="row">{row.id}</TableCell>
-                                <TableCell>{row.name}</TableCell>
-                                <TableCell>{row.username}</TableCell>
-                                <TableCell>{row.email}</TableCell>
-                                <TableCell>{row.phone}</TableCell>
+                                <TableCell>{row.practice}</TableCell>
+                                <TableCell>{row.doctor}</TableCell>
+                                <TableCell>{row.time}</TableCell>
                                 <TableCell>
                                     <Button variant="contained" color="primary" className={classes.button} onClick={this.handleClick}>
                                         Anotarse
