@@ -1,7 +1,11 @@
+import logging
+from flask_cors import CORS
 from flask import Flask, request, jsonify
+
 import database as db
 
 app = Flask(__name__)
+CORS(app)
 
 db = db.DataBase('database.db')
 
@@ -13,7 +17,9 @@ def root():
 
 @app.route('/search_turns')
 def search_turns():
+    app.logger.info('Hit')
     key = request.args.get('search').lower()
+    app.logger.info(key)
     sql = '''
     select
         t.id,
@@ -28,9 +34,18 @@ def search_turns():
              d.first_name like '%{key}%' or
              d.last_name like '%{key}%' or
              )
+    order by t.time desc
+    ;
     '''
-    return jsonify(id=1,
-                   practice='Guardia',
-                   doctor='Juan Carlos',
-                   time='2018-11-07 13:00',
-                   )
+
+    d = {'id': 1,
+         'practice': 'Guardia',
+         'doctor': key,
+         'time': '2018-11-07 13:00'
+         }
+    return jsonify([d])
+
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)

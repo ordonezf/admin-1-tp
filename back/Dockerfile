@@ -2,7 +2,7 @@ FROM python:3.6-slim
 
 RUN pip install --upgrade pip
 
-RUN pip install flask gunicorn
+RUN pip install flask flask_cors gunicorn
 
 COPY . /opt/backend/
 
