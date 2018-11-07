@@ -17,10 +17,12 @@ const styles = theme => ({
         width: '50%',
     },
     tableContainer: {
-        width: '100%',
-        marginTop: theme.spacing.unit * 3,
-        overflow: 'auto',
+        width: '95%',
+        margin: 'auto',
     },
+    table: {
+        overflow: 'auto',
+    }
 });
 
 class SearchTurns extends React.Component {
