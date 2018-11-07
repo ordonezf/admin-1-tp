@@ -31,11 +31,10 @@ class SearchTurns extends React.Component {
 
     handleSearch = async (value) => {
         let results;
-        
-        let url = 'url del backend'
+        let url = 'http://localhost:5555/back/search_turns?search='
+
         try {
-            results = await axios.get('https://jsonplaceholder.typicode.com/users');
-            //results = await axios.get(url + this.state.value);
+            results = await axios.get(url + this.state.value);
         } catch(err) {
             console.log(err);
         }
