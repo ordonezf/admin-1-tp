@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  back:
+    build: './back'
+    ports:
+      - "8000:8000"
+
+  front:
+    build: './front'
+    ports:
+      - "5000:5000"
+
+  nginx:
+    image: nginx:1.15.3
+    ports:
+      - "5555:80"
+    volumes:
+      - ./nginx_reverse_proxy.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./store/static/files:/static:ro
+    links:
+      - back

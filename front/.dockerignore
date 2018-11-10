@@ -1,3 +1,5 @@
+.dockerignore
+Dockerfile
 # Git
 .git
 .gitignore
@@ -7,4 +9,3 @@ LICENSE
 # Node
 node_modules
 npm-debug.log
-
