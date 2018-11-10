@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
@@ -17,12 +18,23 @@ const styles = {
   list: {
     width: 250,
   },
+  drawer: {
+    marginTop: 64, // margin of AppBar
+  }
 };
 
 class MenuDrawer extends React.Component {
   state = {
-    left: false,
+    open: false,
   };
+
+  handleDrawerOpen = () => {
+      this.setState({ open: true });
+  }
+
+  handleDrawerClose = () => {
+      this.setState({ open: false });
+  }
 
   toggleDrawer = (side, open) => () => {
     this.setState({
@@ -35,19 +47,14 @@ class MenuDrawer extends React.Component {
 
     const sideList = (
       <div className={classes.list}>
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
+        <IconButton onClick={this.handleDrawerClose}>
+            <ChevronLeftIcon />
+        </IconButton>
         <Divider />
         <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          {['Mis Turnos', 'Buscar medicos', 'Perfil'].map((text, index) => (
             <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              {/* <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon> */}
               <ListItemText primary={text} />
             </ListItem>
           ))}
@@ -57,13 +64,13 @@ class MenuDrawer extends React.Component {
 
     return (
       <div>
-        <IconButton onClick={this.toggleDrawer('left', true)} color="inherit" aria-label="Menu"><MenuIcon/></IconButton>
-        <Drawer anchor="left" open={this.state.left} onClose={this.toggleDrawer('left', false)}>
+        <IconButton onClick={this.handleDrawerOpen} color="inherit" aria-label="Menu"><MenuIcon/></IconButton>
+        <Drawer className={classes.drawer} anchor="left" open={this.state.open} onClose={this.handleDrawerClose}>
           <div
             tabIndex={0}
             role="button"
-            onClick={this.toggleDrawer('left', false)}
-            onKeyDown={this.toggleDrawer('left', false)}
+            onClick={this.handleDrawerClose}
+            onKeyDown={this.handleDrawerClose}
           >
             {sideList}
           </div>
