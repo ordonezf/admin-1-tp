@@ -6,7 +6,7 @@ import SignIn from '../authentication/SignIn'
 import SignUp from '../authentication/SignUp'
 import SearchTurns from '../turns/SearchTurns'
 import AppointmentList from '../controls/AppointmentList';
-import AppointmentForm from '../controls/AppointmentForm';
+import AppointmentForm from '../controls/Appointments';
 
 class App extends React.Component {
     render() {
@@ -18,7 +18,7 @@ class App extends React.Component {
                     <Route path="/signup" component={SignUp} />
                     <Route path="/search" component={SearchTurns} />
                     <Route path="/appointments" component={AppointmentList} />
-                    <Route path="/new-appointment" component={AppointmentForm} />
+                    <Route path="/newappointment" component={AppointmentForm} />
                 </div>
             </Router>
         )

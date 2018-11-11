@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import { withStyles } from '@material-ui/core/styles';
+
 
 const styles = theme => ({
   container: {
@@ -75,7 +76,7 @@ class AppointmentForm extends React.Component {
     const { classes } = this.props;
 
     return (
-      <form className={classes.container} noValidate autoComplete="off">
+        <form className={classes.container} noValidate autoComplete="off">
           <TextField
             id="outlined-select-speciality"
             select
@@ -134,6 +135,7 @@ class AppointmentForm extends React.Component {
     );
   }
 }
+
 
 AppointmentForm.propTypes = {
   classes: PropTypes.object.isRequired,
