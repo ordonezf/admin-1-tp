@@ -45,6 +45,9 @@ class SignIn extends React.Component {
 
     render() {
         const { classes } = this.props;
+
+        const signUpLink = props => <Link to="/signup" {...props} />
+
         return (
             <Card className={classNames(classes.base)}>
                 <CardHeader title="Sign In" />
@@ -83,8 +86,8 @@ class SignIn extends React.Component {
                     <Button variant="contained" color="primary" className={classes.margin}>
                         Login
                     </Button>
-                    <Button className={classes.margin}>
-                        <Link to="/signup">Not a member? Sign up</Link>
+                    <Button className={classes.margin} component={signUpLink}>
+                        Not a member? Sign up
                     </Button>
                 </CardActions>
             </Card>
