@@ -7,9 +7,12 @@ import SignUp from '../authentication/SignUp'
 import SearchTurns from '../turns/SearchTurns'
 import AppointmentList from '../controls/AppointmentList';
 import AppointmentForm from '../controls/AppointmentForm';
+import PrivateRoute from '../privateRoute/PrivateRoute'
 
 class App extends React.Component {
     render() {
+        const Protected = () => <h3>Protected</h3>
+
         return (
             <Router>
                 <div>
@@ -19,6 +22,7 @@ class App extends React.Component {
                     <Route path="/search" component={SearchTurns} />
                     <Route path="/appointments" component={AppointmentList} />
                     <Route path="/new-appointment" component={AppointmentForm} />
+                    <PrivateRoute path='/protected' component={Protected} />
                 </div>
             </Router>
         )
