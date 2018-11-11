@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Paper from "@material-ui/core/Paper";
+import DatePicker from "react-datepicker";
+import moment from 'moment';
+import "react-datepicker/dist/react-datepicker.css";
 
 
 const styles = theme => ({
@@ -23,9 +28,17 @@ const styles = theme => ({
   menu: {
     width: 200,
   },
+  button: {
+      margin: theme.spacing.unit,
+  },
+  datepicker:{
+      marginTop:2*theme.spacing.unit,
+      marginRight:theme.spacing.unit,
+      marginLeft:theme.spacing.unit
+  },
 });
 
-const specialities = [
+const allspecialities = [
   {
     value: 'CRD',
     label: 'Cardiology',
@@ -44,26 +57,32 @@ const specialities = [
   },
 ];
 
-const phisicians = [
+const allphisicians = [
   {
     value: 1123,
     label: 'Dr.Watson',
+    speciality: 'PDT'
   },
   {
      value: 1822,
      label: 'Dr.Strange',
+     speciality: 'TRM'
+
   },
   {
     value: 1984,
     label: 'Dr.Brown',
+    speciality: 'PSGY'
   },
 ];
 
 class AppointmentForm extends React.Component {
   state = {
     patientId: 0,
-    speciality: 'PDT',
-    phisician: ''
+    selectedSpeciality: allspecialities[0],
+    phisicians: allphisicians,
+    data: [],
+    dateTime: moment()
   };
 
   handleChange = name => event => {
@@ -72,18 +91,34 @@ class AppointmentForm extends React.Component {
     });
   };
 
+  updateSearchDate(date) {
+      this.setState({dateTime:date});
+  };
+
+  searchAppointments(event){
+      event.preventDefault();
+      alert("searching...")
+  };
+
   render() {
+    let filteredPhisicians = this.state.phisicians.filter(
+        (phisician) => {
+            return (
+                phisician.speciality == this.state.selectedSpeciality
+            )
+        }
+    );
     const { classes } = this.props;
 
     return (
-        <form className={classes.container} noValidate autoComplete="off">
+        <form onSubmit={this.searchAppointments.bind(this)}>
           <TextField
             id="outlined-select-speciality"
             select
             label="Speciality"
             className={classes.textField}
-            value={this.state.speciality}
-            onChange={this.handleChange('speciality')}
+            value={this.state.selectedSpeciality}
+            onChange={this.handleChange('selectedSpeciality')}
             SelectProps={{
               native: true,
               MenuProps: {
@@ -94,7 +129,7 @@ class AppointmentForm extends React.Component {
             margin="normal"
             variant="outlined"
           >
-            {specialities.map(option => (
+            {allspecialities.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -115,23 +150,33 @@ class AppointmentForm extends React.Component {
             helperText="Please select a phisician"
             margin="normal"
             variant="outlined"
+            InputLabelProps={{
+              shrink: true,
+            }}
           >
-            {phisicians.map(option => (
+            {filteredPhisicians.map(option => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
             ))}
           </TextField>
-          <TextField
-            id="date"
-            label="Appointment Date"
-            type="date"
-            className={classes.dense}
-            InputLabelProps={{
-              shrink: true,
-            }}
+          <DatePicker
+              minDate={moment()}
+              className={classes.datepicker}
+              selected={this.state.dateTime}
+              onChange={this.handleChange}
+              showTimeSelect
+              dateFormat="LLL"
           />
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            type="submit">
+              Take Appointment
+          </Button>
       </form>
+
     );
   }
 }
