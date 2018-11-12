@@ -76,6 +76,12 @@ const allphisicians = [
   },
 ];
 
+const someTakenAppExample = [
+    {date: "2018-11-12",hour:"10", minutes:"00"},
+    {date: "2018-11-12",hour:"13", minutes:"30"},
+    {date: "2018-11-12",time:"16", minutes:"30"}
+];
+
 class AppointmentForm extends React.Component {
     constructor(props){
         super(props)
@@ -84,6 +90,7 @@ class AppointmentForm extends React.Component {
             selectedSpeciality: allspecialities[0],
             phisicians: allphisicians,
             data: [],
+            excludedTimes:[],
             dateTime: moment().hours(5)
         };
 
@@ -97,7 +104,15 @@ class AppointmentForm extends React.Component {
     };
 
     updateSearchDate(date) {
-        this.setState({dateTime:date});
+        let taken = someTakenAppExample.map(
+            (datetime)=>{
+                return moment(datetime.date,'YYYY-MM-DD').hours(Number.parseInt(datetime.hour)).minutes(Number.parseInt(datetime.minutes))
+            }
+        )
+        this.setState({
+            dateTime:date,
+            excludedTimes: taken
+        });
     };
 
     searchAppointments(event){
@@ -168,6 +183,7 @@ class AppointmentForm extends React.Component {
           <DatePicker
               minDate={moment()}
               maxDate={moment().add(6, "months")}
+              showWeekNumbers
               className={classes.datepicker}
               selected={this.state.dateTime}
               onChange={this.updateSearchDate}
@@ -175,6 +191,7 @@ class AppointmentForm extends React.Component {
               minTime={moment().hours(9).minutes(0)}
               maxTime={moment().hours(18).minutes(30)}
               dateFormat="LLL"
+              excludeTimes={this.state.excludedTimes}
           />
           <Button
             variant="contained"
