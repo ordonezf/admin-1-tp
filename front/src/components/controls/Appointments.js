@@ -29,7 +29,7 @@ const styles = theme => ({
     width: 200,
   },
   button: {
-      margin: theme.spacing.unit,
+      marginTop: theme.spacing.unit,
   },
   datepicker:{
       marginTop:2*theme.spacing.unit,
@@ -77,31 +77,36 @@ const allphisicians = [
 ];
 
 class AppointmentForm extends React.Component {
-  state = {
-    patientId: 0,
-    selectedSpeciality: allspecialities[0],
-    phisicians: allphisicians,
-    data: [],
-    dateTime: moment()
-  };
+    constructor(props){
+        super(props)
+        this.state = {
+            patientId: 0,
+            selectedSpeciality: allspecialities[0],
+            phisicians: allphisicians,
+            data: [],
+            dateTime: moment().hours(5)
+        };
 
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
+        this.updateSearchDate = this.updateSearchDate.bind(this);
+    }
 
-  updateSearchDate(date) {
-      this.setState({dateTime:date});
-  };
+    handleChange = name => event => {
+        this.setState({
+            [name]: event.target.value,
+        });
+    };
 
-  searchAppointments(event){
-      event.preventDefault();
-      alert("searching...")
-  };
+    updateSearchDate(date) {
+        this.setState({dateTime:date});
+    };
 
-  render() {
-    let filteredPhisicians = this.state.phisicians.filter(
+    searchAppointments(event){
+        event.preventDefault();
+        alert("searching...")
+    };
+
+    render() {
+        let filteredPhisicians = this.state.phisicians.filter(
         (phisician) => {
             return (
                 phisician.speciality == this.state.selectedSpeciality
@@ -162,10 +167,13 @@ class AppointmentForm extends React.Component {
           </TextField>
           <DatePicker
               minDate={moment()}
+              maxDate={moment().add(6, "months")}
               className={classes.datepicker}
               selected={this.state.dateTime}
-              onChange={this.handleChange}
+              onChange={this.updateSearchDate}
               showTimeSelect
+              minTime={moment().hours(9).minutes(0)}
+              maxTime={moment().hours(18).minutes(30)}
               dateFormat="LLL"
           />
           <Button
