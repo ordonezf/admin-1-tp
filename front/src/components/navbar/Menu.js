@@ -48,6 +48,11 @@ class MenuDrawer extends React.Component {
     });
   };
 
+  handleSignOut = () => {
+    console.log("Goodbye");
+    this.props.setIsAuthenticated(false);
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -70,7 +75,7 @@ class MenuDrawer extends React.Component {
           </ListItem>
         </List>
         <Divider />
-        <Button component={signOutLink}>
+        <Button component={signOutLink} onClick={this.handleSignOut}>
           <ExitToAppIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
           Desconexion
         </Button>
@@ -97,6 +102,7 @@ class MenuDrawer extends React.Component {
 
 MenuDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
+  setIsAuthenticated: PropTypes.func,
 };
 
 export default withStyles(styles)(MenuDrawer);
