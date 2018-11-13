@@ -17,7 +17,7 @@ def root():
 
 @app.route('/search_turns')
 def search_turns():
-    app.logger.info('Hit')
+    app.logger.info('Hit /search_turns')
     key = request.args.get('search').lower()
     app.logger.info(key)
     sql = '''
@@ -44,6 +44,18 @@ def search_turns():
          'time': '2018-11-07 13:00'
          }
     return jsonify([d])
+
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    app.logger.info('Hit /signup')
+    req = request.form
+    data = {k: req[k] for k in req}
+    app.logger.info(data)
+
+    # Do something
+
+    return jsonify([data])
 
 if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
