@@ -4,7 +4,7 @@ RUN pip install --upgrade pip
 
 RUN pip install flask flask_cors gunicorn
 
-COPY . /opt/backend/
+COPY *.py /opt/backend/
 
 WORKDIR /opt/backend/
 
