@@ -7,7 +7,7 @@ import database as db
 app = Flask(__name__)
 CORS(app)
 
-db = db.DataBase('database.db')
+db = db.DataBase('database/database.db')
 
 
 @app.route('/')
