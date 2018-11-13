@@ -10,7 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+const qs = require('querystring');
 
 const styles = theme => ({
     margin: {
@@ -48,8 +50,17 @@ class SignUp extends React.Component {
         this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
-    handleRegister = () => {
+    handleRegister = async () => {
+        console.log('Click happened');
         console.log(this.state)
+        let results;
+        let url = 'http://localhost:5555/back/signup'
+        try {
+            results = await axios.post(url, qs.stringify(this.state))
+        } catch(err) {
+            console.log(err)
+        }
+        console.log(results)
     };
 
     render() {
