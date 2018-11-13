@@ -33,7 +33,7 @@ class SignIn extends React.Component {
         name: '',
         password: '',
         showPassword: false,
-      };
+    };
     
     handleChange = prop => event => {
         this.setState({ [prop]: event.target.value });
@@ -41,6 +41,11 @@ class SignIn extends React.Component {
 
     handleClickShowPassword = () => {
         this.setState(state => ({ showPassword: !state.showPassword }));
+    };
+
+    handleSignIn = () => {
+        console.log('Signing in...');
+        this.props.setIsAuthenticated(true);
     };
 
     render() {
@@ -83,7 +88,7 @@ class SignIn extends React.Component {
                     />
                 </CardContent>
                 <CardActions>
-                    <Button variant="contained" color="primary" className={classes.margin}>
+                    <Button variant="contained" color="primary" className={classes.margin} onClick={this.handleSignIn}>
                         Login
                     </Button>
                     <Button className={classes.margin} component={signUpLink}>

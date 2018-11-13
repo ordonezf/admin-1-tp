@@ -25,7 +25,7 @@ const NavBar = (props) => {
         <div>
         <AppBar position="static">
             <Toolbar>
-                <MenuDrawer />
+                { props.isAuthenticated ? <MenuDrawer setIsAuthenticated={props.setIsAuthenticated} /> : null }
                 <Typography variant="h6" color="inherit" className={classes.grow}>
                 Mis Turnos Medicos
                 </Typography>
@@ -37,6 +37,8 @@ const NavBar = (props) => {
 
 NavBar.propTypes = {
     classes: PropTypes.object.isRequired,
+    isAuthenticated: PropTypes.bool,
+    setIsAuthenticated: PropTypes.func,
   };
   
   export default withStyles(styles)(NavBar);

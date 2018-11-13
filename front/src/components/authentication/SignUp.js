@@ -17,6 +17,7 @@ const styles = theme => ({
       margin: theme.spacing.unit,
     },
     base : {
+        marginTop: '1em',
         position: 'fixed',
         top: '50%',
         left: '50%',
