@@ -21,18 +21,15 @@ class App extends React.Component {
     };
 
     render() {
-        const Protected = () => <h3>Protected</h3>
-
         return (
             <Router>
                 <div>
                     <NavBar isAuthenticated={this.state.isAuthenticated} setIsAuthenticated={this.setIsAuthenticated} />
                     <Route path="/" exact render={ () => <SignIn setIsAuthenticated={this.setIsAuthenticated} />} />
                     <Route path="/signup" component={SignUp} />
-                    <Route path="/search" component={SearchTurns} />
-                    <Route path="/appointments" component={AppointmentList} />
-                    <Route path="/new-appointment" component={AppointmentForm} />
-                    <PrivateRoute path='/protected' component={Protected} />
+                    <PrivateRoute path="/search" component={SearchTurns} isAuthenticated={this.state.isAuthenticated} />
+                    <PrivateRoute path="/appointments" component={AppointmentList} isAuthenticated={this.state.isAuthenticated} />
+                    <PrivateRoute path="/new-appointment" component={AppointmentForm} isAuthenticated={this.state.isAuthenticated} />
                 </div>
             </Router>
         )
