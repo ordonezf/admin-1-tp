@@ -56,8 +56,9 @@ class MenuDrawer extends React.Component {
   render() {
     const { classes } = this.props;
 
-    const appointmentsLink = props => <Link to="/appointments" {...props} />
     const searchLink = props => <Link to="/search" {...props} />
+    const appointmentsLink = props => <Link to="/appointments" {...props} />
+    const newAppointmentLink = props => <Link to="/new-appointment" {...props} />
     const signOutLink = props => <Link to="/" {...props} />
 
     const sideList = (
@@ -67,11 +68,14 @@ class MenuDrawer extends React.Component {
         </IconButton>
         <Divider />
         <List>
+          <ListItem button key={'Buscar medicos'} component={searchLink}>
+            <ListItemText primary={'Buscar medicos'} />
+          </ListItem>
           <ListItem button key={'Mis Turnos'} component={appointmentsLink}>
             <ListItemText primary={'Mis Turnos'} />
           </ListItem>
-          <ListItem button key={'Buscar medicos'} component={searchLink}>
-            <ListItemText primary={'Buscar medicos'} />
+          <ListItem button key={'Nuevo Turno'} component={newAppointmentLink}>
+            <ListItemText primary={'Nuevo Turno'} />
           </ListItem>
         </List>
         <Divider />
