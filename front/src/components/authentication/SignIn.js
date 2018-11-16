@@ -10,7 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import qs from 'querystring';
 
 const styles = theme => ({
     margin: {
@@ -43,7 +45,15 @@ class SignIn extends React.Component {
         this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
-    handleSignIn = () => {
+    handleSignIn = async () => {
+        let results;
+        const url = 'http://localhost:5555/back/signin';
+        try {
+            results = await axios.post(url, qs.stringify([this.state.name, this.state.password]));
+        } catch(err) {
+            console.log(err);
+        }
+        console.log(results);
         console.log('Signing in...');
         this.props.setIsAuthenticated(true);
     };
@@ -59,7 +69,7 @@ class SignIn extends React.Component {
                 <CardContent>
                     <TextField
                         id="outlined-name"
-                        label="Name"
+                        label="Usuario (DNI)"
                         className={classNames(classes.margin, classes.textField)}
                         value={this.state.name}
                         onChange={this.handleChange('name')}
@@ -70,7 +80,7 @@ class SignIn extends React.Component {
                         id="outlined-adornment-password"
                         className={classNames(classes.margin, classes.textField)}
                         type={this.state.showPassword ? 'text' : 'password'}
-                        label="Password"
+                        label="Contraseña"
                         value={this.state.password}
                         onChange={this.handleChange('password')}
                         InputProps={{
@@ -89,10 +99,10 @@ class SignIn extends React.Component {
                 </CardContent>
                 <CardActions>
                     <Button variant="contained" color="primary" className={classes.margin} onClick={this.handleSignIn}>
-                        Login
+                        Ingresar
                     </Button>
                     <Button className={classes.margin} component={signUpLink}>
-                        Not a member? Sign up
+                        ¿No es un miembro? Registrese
                     </Button>
                 </CardActions>
             </Card>
