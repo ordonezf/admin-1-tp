@@ -33,10 +33,10 @@ class SearchTurns extends React.Component {
 
     handleSearch = async (value) => {
         let results;
-        let url = 'http://localhost:5555/back/search_turns?search='
-
+        // const url = 'http://localhost:5555/back/search_turns?search=';
+        const url = 'https://jsonplaceholder.typicode.com/users/';
         try {
-            results = await axios.get(url + this.state.value);
+            results = await axios.get(url);
         } catch(err) {
             console.log(err);
         }
@@ -99,7 +99,6 @@ class SearchTurns extends React.Component {
                     </Table>
                 </Paper>
             )}
-
         </div>
         )
     }

@@ -9,10 +9,9 @@ class DataBase(object):
         self.db_file = db_file
 
         if os.path.isfile(db_file):
-            pass
+            self.conn = self.create_connection(db_file)
         else:
             self.conn = self.create_connection(db_file)
-
             for table_name in ct.create_tables:
                 self.create_table(table_name, ct.create_tables[table_name])
 
@@ -40,9 +39,11 @@ class DataBase(object):
         try:
             c = self.conn.cursor()
             c.execute(create_table_sql)
+            self.conn.commit()
         except Error as e:
             print(e)
             print(table_name)
+            print(create_table_sql)
 
     def query_database(self, sql_query):
         try:
@@ -51,3 +52,7 @@ class DataBase(object):
         except Error as e:
             print(e)
             print(sql_query)
+
+    def modify_database(self, sql_query):
+        self.query_database(sql_query)
+        self.conn.commit()

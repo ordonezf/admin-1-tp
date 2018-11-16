@@ -1,5 +1,4 @@
 # Mis Turnos Médicos
----
 Trabajo practico grupal de la materia Administración y Control de Proyectos Informáticos 75.44 de la FIUBA.
 
 ## Integrantes

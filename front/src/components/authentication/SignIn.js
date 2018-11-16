@@ -10,7 +10,9 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom';
+import axios from 'axios';
+import qs from 'querystring';
 
 const styles = theme => ({
     margin: {
@@ -33,7 +35,7 @@ class SignIn extends React.Component {
         name: '',
         password: '',
         showPassword: false,
-      };
+    };
     
     handleChange = prop => event => {
         this.setState({ [prop]: event.target.value });
@@ -43,15 +45,33 @@ class SignIn extends React.Component {
         this.setState(state => ({ showPassword: !state.showPassword }));
     };
 
+    handleSignIn = async () => {
+        let results;
+        const url = 'http://localhost:5555/back/signin';
+        try {
+            results = await axios.post(url, qs.stringify([this.state.name, this.state.password]));
+        } catch(err) {
+            console.log(err);
+            // return;
+        }
+        console.log(results);
+        console.log('Signing in...');
+        this.props.setIsAuthenticated(true);
+        this.props.history.push('/appointments');
+    };
+
     render() {
         const { classes } = this.props;
+
+        const signUpLink = props => <Link to="/signup" {...props} />
+
         return (
             <Card className={classNames(classes.base)}>
                 <CardHeader title="Sign In" />
                 <CardContent>
                     <TextField
                         id="outlined-name"
-                        label="Name"
+                        label="Usuario (DNI)"
                         className={classNames(classes.margin, classes.textField)}
                         value={this.state.name}
                         onChange={this.handleChange('name')}
@@ -62,7 +82,7 @@ class SignIn extends React.Component {
                         id="outlined-adornment-password"
                         className={classNames(classes.margin, classes.textField)}
                         type={this.state.showPassword ? 'text' : 'password'}
-                        label="Password"
+                        label="Contraseña"
                         value={this.state.password}
                         onChange={this.handleChange('password')}
                         InputProps={{
@@ -80,11 +100,11 @@ class SignIn extends React.Component {
                     />
                 </CardContent>
                 <CardActions>
-                    <Button variant="contained" color="primary" className={classes.margin}>
-                        Login
+                    <Button variant="contained" color="primary" className={classes.margin} onClick={this.handleSignIn}>
+                        Ingresar
                     </Button>
-                    <Button className={classes.margin}>
-                        <Link to="/signup">Not a member? Sign up</Link>
+                    <Button className={classes.margin} component={signUpLink}>
+                        ¿No es un miembro? Registrese
                     </Button>
                 </CardActions>
             </Card>
@@ -96,4 +116,4 @@ SignIn.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SignIn);
+export default withStyles(styles)(withRouter(SignIn));
