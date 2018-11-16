@@ -6,7 +6,7 @@ import SignIn from '../authentication/SignIn'
 import SignUp from '../authentication/SignUp'
 import SearchTurns from '../turns/SearchTurns'
 import AppointmentList from '../controls/AppointmentList';
-import AppointmentForm from '../controls/AppointmentForm';
+import AppointmentForm from '../controls/Appointments';
 import PrivateRoute from '../privateRoute/PrivateRoute'
 
 class App extends React.Component {
@@ -30,7 +30,7 @@ class App extends React.Component {
                     <Route path="/signup" component={SignUp} />
                     <PrivateRoute path="/search" component={SearchTurns} isAuthenticated={this.state.isAuthenticated} />
                     <PrivateRoute path="/appointments" component={AppointmentList} isAuthenticated={this.state.isAuthenticated} />
-                    <PrivateRoute path="/new-appointment" component={AppointmentForm} isAuthenticated={this.state.isAuthenticated} />
+                    <PrivateRoute path="/newappointment" component={AppointmentForm} isAuthenticated={this.state.isAuthenticated} />
                 </div>
             </Router>
         )
