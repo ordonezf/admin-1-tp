@@ -10,7 +10,7 @@ import TextField from '@material-ui/core/TextField';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 import qs from 'querystring';
 
@@ -52,10 +52,12 @@ class SignIn extends React.Component {
             results = await axios.post(url, qs.stringify([this.state.name, this.state.password]));
         } catch(err) {
             console.log(err);
+            // return;
         }
         console.log(results);
         console.log('Signing in...');
         this.props.setIsAuthenticated(true);
+        this.props.history.push('/appointments');
     };
 
     render() {
@@ -114,4 +116,4 @@ SignIn.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SignIn);
+export default withStyles(styles)(withRouter(SignIn));
