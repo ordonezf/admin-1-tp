@@ -46,7 +46,7 @@ def search_turns():
     return jsonify([d])
 
 
-@app.route('/signup', methods=['POST'])
+@app.route('/back/signup', methods=['POST'])
 def signup():
     app.logger.info('Hit /signup')
     req = request.form
