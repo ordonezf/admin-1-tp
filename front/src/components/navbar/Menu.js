@@ -35,12 +35,12 @@ class MenuDrawer extends React.Component {
   };
 
   handleDrawerOpen = () => {
-      this.setState({ open: true });
-  }
+    this.setState({ open: true });
+  };
 
   handleDrawerClose = () => {
-      this.setState({ open: false });
-  }
+    this.setState({ open: false });
+  };
 
   toggleDrawer = (side, open) => () => {
     this.setState({
@@ -49,22 +49,24 @@ class MenuDrawer extends React.Component {
   };
 
   handleSignOut = () => {
-    console.log("Goodbye");
+    console.log('Goodbye');
     this.props.setIsAuthenticated(false);
   };
 
   render() {
     const { classes } = this.props;
 
-    const searchLink = props => <Link to="/search" {...props} />
-    const appointmentsLink = props => <Link to="/appointments" {...props} />
-    const newAppointmentLink = props => <Link to="/newappointment" {...props} />
-    const signOutLink = props => <Link to="/" {...props} />
+    const searchLink = props => <Link to="/search" {...props} />;
+    const appointmentsLink = props => <Link to="/appointments" {...props} />;
+    const newAppointmentLink = props => (
+      <Link to="/newappointment" {...props} />
+    );
+    const signOutLink = props => <Link to="/" {...props} />;
 
     const sideList = (
       <div className={classes.list}>
         <IconButton onClick={this.handleDrawerClose}>
-            <ChevronLeftIcon />
+          <ChevronLeftIcon />
         </IconButton>
         <Divider />
         <List>
@@ -80,7 +82,9 @@ class MenuDrawer extends React.Component {
         </List>
         <Divider />
         <Button component={signOutLink} onClick={this.handleSignOut}>
-          <ExitToAppIcon className={classNames(classes.leftIcon, classes.iconSmall)} />
+          <ExitToAppIcon
+            className={classNames(classes.leftIcon, classes.iconSmall)}
+          />
           Desconexion
         </Button>
       </div>
@@ -88,8 +92,19 @@ class MenuDrawer extends React.Component {
 
     return (
       <div>
-        <IconButton onClick={this.handleDrawerOpen} color="inherit" aria-label="Menu"><MenuIcon/></IconButton>
-        <Drawer className={classes.drawer} anchor="left" open={this.state.open} onClose={this.handleDrawerClose}>
+        <IconButton
+          onClick={this.handleDrawerOpen}
+          color="inherit"
+          aria-label="Menu"
+        >
+          <MenuIcon />
+        </IconButton>
+        <Drawer
+          className={classes.drawer}
+          anchor="left"
+          open={this.state.open}
+          onClose={this.handleDrawerClose}
+        >
           <div
             tabIndex={0}
             role="button"

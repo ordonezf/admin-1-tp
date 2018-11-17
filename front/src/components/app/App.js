@@ -11,32 +11,57 @@ import PrivateRoute from '../privateRoute/PrivateRoute';
 import ServerConnector from '../../connectors/ServerConnector';
 
 class App extends React.Component {
-    state = {
-        isAuthenticated: false,
-        serverConnector: new ServerConnector(),
-    };
+  state = {
+    isAuthenticated: false,
+    serverConnector: new ServerConnector(),
+  };
 
-    setIsAuthenticated = value => {
-        console.log(`Received value: ${value}`);
-        this.setState({ isAuthenticated: value });
-        console.log(`New value setted for isAuthenticated: ${this.state.isAuthenticated}`);
-    };
+  setIsAuthenticated = value => {
+    console.log(`Received value: ${value}`);
+    this.setState({ isAuthenticated: value });
+    console.log(
+      `New value setted for isAuthenticated: ${this.state.isAuthenticated}`
+    );
+  };
 
-    render() {
-        window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
-        return (
-            <Router>
-                <div>
-                    <NavBar isAuthenticated={this.state.isAuthenticated} setIsAuthenticated={this.setIsAuthenticated} />
-                    <Route path="/" exact render={() => <SignIn setIsAuthenticated={this.setIsAuthenticated} />} />
-                    <Route path="/signup" component={SignUp} />
-                    <PrivateRoute path="/search" component={SearchAppointments} isAuthenticated={this.state.isAuthenticated} />
-                    <PrivateRoute path="/appointments" component={AppointmentList} isAuthenticated={this.state.isAuthenticated} />
-                    <Route path="/newappointment" render={() => <AppointmentForm serverConnector={this.state.serverConnector} />} isAuthenticated={this.state.isAuthenticated} />
-                </div>
-            </Router>
-        )
-    }
+  render() {
+    window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
+    return (
+      <Router>
+        <div>
+          <NavBar
+            isAuthenticated={this.state.isAuthenticated}
+            setIsAuthenticated={this.setIsAuthenticated}
+          />
+          <Route
+            path="/"
+            exact
+            render={() => (
+              <SignIn setIsAuthenticated={this.setIsAuthenticated} />
+            )}
+          />
+          <Route path="/signup" component={SignUp} />
+          <PrivateRoute
+            path="/search"
+            component={SearchAppointments}
+            isAuthenticated={this.state.isAuthenticated}
+          />
+          <PrivateRoute
+            path="/appointments"
+            component={AppointmentList}
+            isAuthenticated={this.state.isAuthenticated}
+          />
+          <Route
+            path="/newappointment"
+            render={() => (
+              <AppointmentForm serverConnector={this.state.serverConnector} />
+            )}
+            isAuthenticated={this.state.isAuthenticated}
+          />
+        </div>
+      </Router>
+    );
+  }
 }
 
 export default App;
