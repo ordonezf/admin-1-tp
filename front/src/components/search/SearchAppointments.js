@@ -25,7 +25,7 @@ const styles = theme => ({
     }
 });
 
-class SearchTurns extends React.Component {
+class SearchAppointments extends React.Component {
     state = {
         value: '',
         results: null,
@@ -104,8 +104,8 @@ class SearchTurns extends React.Component {
     }
 }
 
-SearchTurns.propTypes = {
+SearchAppointments.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SearchTurns);
+export default withStyles(styles)(SearchAppointments);

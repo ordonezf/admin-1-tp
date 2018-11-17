@@ -1,12 +1,12 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import NavBar from '../navbar/NavBar'
-import SignIn from '../authentication/SignIn'
-import SignUp from '../authentication/SignUp'
-import SearchTurns from '../turns/SearchTurns'
-import AppointmentList from '../controls/AppointmentList';
-import AppointmentForm from '../controls/AppointmentForm';
+import NavBar from '../navbar/NavBar';
+import SignIn from '../authentication/SignIn';
+import SignUp from '../authentication/SignUp';
+import SearchAppointments from '../search/SearchAppointments';
+import AppointmentList from '../appointments/AppointmentList';
+import AppointmentForm from '../appointments/AppointmentForm';
 import PrivateRoute from '../privateRoute/PrivateRoute';
 import ServerConnector from '../../connectors/ServerConnector';
 
@@ -30,7 +30,7 @@ class App extends React.Component {
                     <NavBar isAuthenticated={this.state.isAuthenticated} setIsAuthenticated={this.setIsAuthenticated} />
                     <Route path="/" exact render={() => <SignIn setIsAuthenticated={this.setIsAuthenticated} />} />
                     <Route path="/signup" component={SignUp} />
-                    <PrivateRoute path="/search" component={SearchTurns} isAuthenticated={this.state.isAuthenticated} />
+                    <PrivateRoute path="/search" component={SearchAppointments} isAuthenticated={this.state.isAuthenticated} />
                     <PrivateRoute path="/appointments" component={AppointmentList} isAuthenticated={this.state.isAuthenticated} />
                     <Route path="/newappointment" render={() => <AppointmentForm serverConnector={this.state.serverConnector} />} isAuthenticated={this.state.isAuthenticated} />
                 </div>
