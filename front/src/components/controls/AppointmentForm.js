@@ -3,13 +3,15 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import Paper from "@material-ui/core/Paper";
-import DatePicker from "react-datepicker";
-import moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
+import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core';
 
 
 const styles = theme => ({
+  base : {
+    width: '50%',
+    margin: '1em auto',
+  },
   container: {
     display: 'flex',
     flexWrap: 'wrap',
@@ -19,17 +21,14 @@ const styles = theme => ({
     marginRight: theme.spacing.unit,
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
+    flexBasis: 200,
+    width: '100%',
   },
   dense: {
     marginTop: 16,
   },
   menu: {
     width: 200,
-  },
-  button: {
-      marginTop: theme.spacing.unit,
   },
   datepicker:{
       marginTop:2*theme.spacing.unit,
@@ -91,7 +90,8 @@ class AppointmentForm extends React.Component {
             phisicians: allphisicians,
             data: [],
             excludedTimes:[],
-            dateTime: moment().hours(5)
+            dateTime: '',
+            // dateTime: moment().hours(5)
         };
 
         this.updateSearchDate = this.updateSearchDate.bind(this);
@@ -106,7 +106,8 @@ class AppointmentForm extends React.Component {
     updateSearchDate(date) {
         let taken = someTakenAppExample.map(
             (datetime)=>{
-                return moment(datetime.date,'YYYY-MM-DD').hours(Number.parseInt(datetime.hour)).minutes(Number.parseInt(datetime.minutes))
+                // return moment(datetime.date,'YYYY-MM-DD').hours(Number.parseInt(datetime.hour)).minutes(Number.parseInt(datetime.minutes))
+                return '';
             }
         )
         this.setState({
@@ -124,30 +125,26 @@ class AppointmentForm extends React.Component {
         let filteredPhisicians = this.state.phisicians.filter(
         (phisician) => {
             return (
-                phisician.speciality == this.state.selectedSpeciality
+                phisician.speciality === this.state.selectedSpeciality
             )
         }
     );
     const { classes } = this.props;
-
     return (
-        <form onSubmit={this.searchAppointments.bind(this)}>
+      <Card className={classes.base}>
+        <CardHeader title="Nuevo turno" />
+        <CardContent>
           <TextField
-            id="outlined-select-speciality"
             select
-            label="Speciality"
+            label="Especialidad"
             className={classes.textField}
-            value={this.state.selectedSpeciality}
+            value={this.state.selectedSpeciality.label}
             onChange={this.handleChange('selectedSpeciality')}
             SelectProps={{
               native: true,
-              MenuProps: {
-                className: classes.menu,
-              },
             }}
-            helperText="Please select a speciality"
+            helperText="Por favor seleccione una especialidad"
             margin="normal"
-            variant="outlined"
           >
             {allspecialities.map(option => (
               <option key={option.value} value={option.value}>
@@ -155,21 +152,17 @@ class AppointmentForm extends React.Component {
               </option>
             ))}
           </TextField>
+          <br />
           <TextField
-            id="outlined-select-phisician"
             select
-            label="Phisician"
+            label="Profesional"
             className={classes.textField}
             onChange={this.handleChange('phisician')}
             SelectProps={{
               native: true,
-              MenuProps: {
-                className: classes.menu,
-              },
             }}
-            helperText="Please select a phisician"
+            helperText="Por favor seleccione un profesional"
             margin="normal"
-            variant="outlined"
             InputLabelProps={{
               shrink: true,
             }}
@@ -180,7 +173,16 @@ class AppointmentForm extends React.Component {
               </option>
             ))}
           </TextField>
-          <DatePicker
+        </CardContent>
+        <CardActions>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={this.searchAppointments}>
+              Sacar turno
+          </Button>
+        </CardActions>
+          {/* <DatePicker
               minDate={moment()}
               maxDate={moment().add(6, "months")}
               showWeekNumbers
@@ -192,16 +194,8 @@ class AppointmentForm extends React.Component {
               maxTime={moment().hours(18).minutes(30)}
               dateFormat="LLL"
               excludeTimes={this.state.excludedTimes}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            type="submit">
-              Take Appointment
-          </Button>
-      </form>
-
+          /> */}
+      </Card>
     );
   }
 }
@@ -209,6 +203,7 @@ class AppointmentForm extends React.Component {
 
 AppointmentForm.propTypes = {
   classes: PropTypes.object.isRequired,
+  serverConnector: PropTypes.any,
 };
 
 export default withStyles(styles)(AppointmentForm);

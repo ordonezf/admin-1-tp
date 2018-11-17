@@ -6,12 +6,14 @@ import SignIn from '../authentication/SignIn'
 import SignUp from '../authentication/SignUp'
 import SearchTurns from '../turns/SearchTurns'
 import AppointmentList from '../controls/AppointmentList';
-import AppointmentForm from '../controls/Appointments';
-import PrivateRoute from '../privateRoute/PrivateRoute'
+import AppointmentForm from '../controls/AppointmentForm';
+import PrivateRoute from '../privateRoute/PrivateRoute';
+import ServerConnector from '../../connectors/ServerConnector';
 
 class App extends React.Component {
     state = {
         isAuthenticated: false,
+        serverConnector: new ServerConnector(),
     };
 
     setIsAuthenticated = value => {
@@ -26,11 +28,11 @@ class App extends React.Component {
             <Router>
                 <div>
                     <NavBar isAuthenticated={this.state.isAuthenticated} setIsAuthenticated={this.setIsAuthenticated} />
-                    <Route path="/" exact render={ () => <SignIn setIsAuthenticated={this.setIsAuthenticated} />} />
+                    <Route path="/" exact render={() => <SignIn setIsAuthenticated={this.setIsAuthenticated} />} />
                     <Route path="/signup" component={SignUp} />
                     <PrivateRoute path="/search" component={SearchTurns} isAuthenticated={this.state.isAuthenticated} />
                     <PrivateRoute path="/appointments" component={AppointmentList} isAuthenticated={this.state.isAuthenticated} />
-                    <PrivateRoute path="/newappointment" component={AppointmentForm} isAuthenticated={this.state.isAuthenticated} />
+                    <Route path="/newappointment" render={() => <AppointmentForm serverConnector={this.state.serverConnector} />} isAuthenticated={this.state.isAuthenticated} />
                 </div>
             </Router>
         )

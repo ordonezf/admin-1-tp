@@ -58,7 +58,7 @@ class MenuDrawer extends React.Component {
 
     const searchLink = props => <Link to="/search" {...props} />
     const appointmentsLink = props => <Link to="/appointments" {...props} />
-    const newAppointmentLink = props => <Link to="/new-appointment" {...props} />
+    const newAppointmentLink = props => <Link to="/newappointment" {...props} />
     const signOutLink = props => <Link to="/" {...props} />
 
     const sideList = (

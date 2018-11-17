@@ -11,13 +11,8 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
-import IconButton from "@material-ui/core/IconButton";
 import Tooltip from "@material-ui/core/Tooltip";
-import FilterListIcon from "@material-ui/icons/FilterList";
-import { SearchPanel } from '@devexpress/dx-react-grid-material-ui';
 import { lighten } from "@material-ui/core/styles/colorManipulator";
-import DatePicker from "react-datepicker";
-import moment from 'moment';
 import "react-datepicker/dist/react-datepicker.css";
 
 
@@ -184,7 +179,7 @@ class AppointmentList extends React.Component {
     page: 0,
     rowsPerPage: 5,
     search : "",
-    sartDate : moment().startOf('month').format('DD/MM/YYYY'),
+    sartDate : '', //moment().startOf('month').format('DD/MM/YYYY'),
     endDate : null
   };
 
@@ -224,9 +219,9 @@ class AppointmentList extends React.Component {
     let filteredItems = this.state.data.filter(
         (listitem) => {
             return (listitem.phisician.toLowerCase().indexOf(this.state.search.toLowerCase())!==-1
-            || listitem.patient.toLowerCase().indexOf(this.state.search.toLowerCase())!==-1)
-            && moment(listitem.date).isSameOrAfter(this.startDate,'year')
-            && (!this.endDate || moment(listitem.date).isSameOrBefore(this.endDate,'year'));
+            || listitem.patient.toLowerCase().indexOf(this.state.search.toLowerCase())!==-1);
+            // && moment(listitem.date).isSameOrAfter(this.startDate,'year')
+            // && (!this.endDate || moment(listitem.date).isSameOrBefore(this.endDate,'year'));
         }
     );
 
@@ -244,7 +239,7 @@ class AppointmentList extends React.Component {
                 </Typography>
               </div>
               <br/>
-              <div>
+              {/* <div>
                   <input type="text" value={this.state.search} onChange={this.updateSearch.bind(this)}/>
               </div>
               <div>
@@ -262,7 +257,7 @@ class AppointmentList extends React.Component {
                       showTimeSelect
                       dateFormat="LLL"
                   />
-              </div>
+              </div> */}
           </Toolbar>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
