@@ -4,6 +4,7 @@ const appointmentsInfo = {
   },
   Deportologia: {
     'Strange Esteban': ['1995-12-17T03:24:00', '1995-12-17T03:24:00'],
+    'Brown Gustavo': ['1995-12-17T03:24:00', '1995-12-17T03:24:00'],
   },
   Traumatologia: {
     'House Gregorio': ['1995-12-17T03:24:00', '1995-12-17T03:24:00'],
@@ -54,9 +55,21 @@ const someTakenAppExample = [
 ];
 
 class ServerConnector {
-  getAppointmentsInfo() {
+  getSpecialities = () => {
+    return Object.keys(appointmentsInfo);
+  };
+
+  getPhisicians = speciality => {
+    return Object.keys(appointmentsInfo[speciality]);
+  };
+
+  getDates = (speciality, phisician) => {
+    return appointmentsInfo[speciality][phisician];
+  };
+
+  getAppointmentsInfo = () => {
     return appointmentsInfo;
-  }
+  };
 }
 
 export default ServerConnector;
