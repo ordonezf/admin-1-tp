@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card';
 import classNames from 'classnames';
@@ -11,6 +12,9 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
 import { Link } from 'react-router-dom'
+
+const base_url = 'http://localhost:8000'
+const create_success = 201
 
 const styles = theme => ({
     margin: {
@@ -49,7 +53,26 @@ class SignUp extends React.Component {
     };
 
     handleRegister = () => {
-        console.log(this.state)
+        let url = base_url + '/signup'
+        try {
+            const user = {dni:this.state.dni, first_name:this.state.firstName,
+            last_name:this.state.lastName, username:this.state.username, birthday:this.state.birthday, email:this.state.mail,
+            password:this.state.password};
+
+            axios.post(url, {user}).then(res => {
+                console.log(res)
+                if (res.status == create_success){
+                    console.log(res)
+                    alert("Success!")
+                } else {
+                    console.log("Error creating user: " + res.status + res.statusText)
+                    alert("Error creating user: " + res.status + "-" + res.statusText)
+                    this.state = {}
+                }
+            });
+        } catch(err) {
+            console.log(err);
+        }
     };
 
     render() {
@@ -142,11 +165,11 @@ class SignUp extends React.Component {
                         Register
                     </Button>
                     <Button className={classes.margin}>
-                        <Link to="/">Already a member? Sign in</Link>
+                        <Link to='/'>Already a member? Sign in</Link>
                     </Button>
                 </CardActions>
             </Card>
-        )
+        );
     }
 }
 

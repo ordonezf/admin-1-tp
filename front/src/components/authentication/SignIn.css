@@ -1,0 +1,12 @@
+.base {
+    /*position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);*/
+    margin-top: 10vh;
+    text-align: center;
+}
+
+.field {
+    width: 100%;
+}
