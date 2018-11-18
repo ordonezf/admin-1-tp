@@ -4,7 +4,11 @@ create_tables = {
         id integer primary key autoincrement,
         dni text,
         first_name text,
-        last_name text
+        last_name text,
+        username text,
+        birthday text,
+        email text,
+        password text
     );
     ''',
     'DOCTORS_TABLE': '''

@@ -23,8 +23,8 @@ class DataBase(object):
         :return: Connection object or None
         """
         try:
-            conn = sqlite3.connect(db_file)
-            return conn
+            self.conn = sqlite3.connect(db_file)
+            return self.conn
         except Error as e:
             print(e)
 
@@ -44,10 +44,16 @@ class DataBase(object):
             print(e)
             print(table_name)
 
-    def query_database(self, sql_query):
+    def query_database(self, sql_query, payload=''):
         try:
             c = self.conn.cursor()
-            c.execute(sql_query)
+            c.execute(sql_query, payload)
+            return c.fetchall()
         except Error as e:
             print(e)
             print(sql_query)
+
+    def modify_database(self, sql_query, payload):
+        cur = self.conn.cursor()
+        cur.execute(sql_query, payload)
+

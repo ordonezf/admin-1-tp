@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card';
 import classNames from 'classnames';
@@ -11,6 +12,9 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
 import { Link } from 'react-router-dom'
+
+const base_url = 'http://localhost:8000'
+const success = 200
 
 const styles = theme => ({
     margin: {
@@ -42,7 +46,29 @@ class SignIn extends React.Component {
     handleClickShowPassword = () => {
         this.setState(state => ({ showPassword: !state.showPassword }));
     };
+    
+    handleSignin = () => {
+        let url = base_url + '/signin'
+        try {
+            const user = { username:this.state.name, password:this.state.password};
 
+            axios.post(url, {user}).then(res => {
+                console.log(res)
+                if (res.status == success){
+                    console.log(res)
+                    alert("Success!")
+                } else {
+                    console.log("Error creating user: " + res.status + res.statusText)
+                    alert("Error creating user: " + res.status + "-" + res.statusText)
+                    this.state = {}
+                }
+            });
+        } catch(err) {
+            console.log(err);
+        }
+    };
+    
+ 
     render() {
         const { classes } = this.props;
         return (
@@ -80,7 +106,7 @@ class SignIn extends React.Component {
                     />
                 </CardContent>
                 <CardActions>
-                    <Button variant="contained" color="primary" className={classes.margin}>
+                    <Button variant="contained" color="primary" className={classes.margin} onClick={this.handleSignin}>
                         Login
                     </Button>
                     <Button className={classes.margin}>

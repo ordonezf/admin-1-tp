@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import Paper from "@material-ui/core/Paper";
 import DatePicker from "react-datepicker";
 import moment from 'moment';
+import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 
 
@@ -87,6 +88,7 @@ class AppointmentForm extends React.Component {
         super(props)
         this.state = {
             patientId: 0,
+            specialities: allspecialities[0],
             selectedSpeciality: allspecialities[0],
             phisicians: allphisicians,
             data: [],
@@ -102,6 +104,10 @@ class AppointmentForm extends React.Component {
             [name]: event.target.value,
         });
     };
+
+    updateDoctors(event) {
+      console.log("updating doctors...")
+    }
 
     updateSearchDate(date) {
         let taken = someTakenAppExample.map(
