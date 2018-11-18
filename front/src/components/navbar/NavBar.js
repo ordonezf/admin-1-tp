@@ -5,40 +5,42 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
-import MenuDrawer from './Menu'
+import MenuDrawer from './Menu';
 const styles = {
-    root: {
-      flexGrow: 1,
-    },
-    grow: {
-      flexGrow: 1,
-    },
-    menuButton: {
-      marginLeft: -12,
-      marginRight: 20,
-    },
+  root: {
+    flexGrow: 1,
+  },
+  grow: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginLeft: -12,
+    marginRight: 20,
+  },
 };
 
-const NavBar = (props) => {
-    const { classes } = props;
-    return(
-        <div>
-        <AppBar position="static">
-            <Toolbar>
-                { props.isAuthenticated ? <MenuDrawer setIsAuthenticated={props.setIsAuthenticated} /> : null }
-                <Typography variant="h6" color="inherit" className={classes.grow}>
-                Mis Turnos Medicos
-                </Typography>
-            </Toolbar>
-        </AppBar>
-        </div>
-    )
-}
+const NavBar = props => {
+  const { classes } = props;
+  return (
+    <div>
+      <AppBar position="static">
+        <Toolbar>
+          {props.isAuthenticated ? (
+            <MenuDrawer setIsAuthenticated={props.setIsAuthenticated} />
+          ) : null}
+          <Typography variant="h6" color="inherit" className={classes.grow}>
+            Mis Turnos Medicos
+          </Typography>
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+};
 
 NavBar.propTypes = {
-    classes: PropTypes.object.isRequired,
-    isAuthenticated: PropTypes.bool,
-    setIsAuthenticated: PropTypes.func,
-  };
-  
-  export default withStyles(styles)(NavBar);
+  classes: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool,
+  setIsAuthenticated: PropTypes.func,
+};
+
+export default withStyles(styles)(NavBar);
