@@ -20,36 +20,32 @@
 //	$db->exec("insert into users (id,dni,first_name, last_name) values (2,'28930666', 'Carlos', 'Santillan')");
 //	$db->exec("commit");
 
+	// CREAR DOCTORES
+	//$db->exec('drop table  doctors;');
 	
 	// CREAR DOCTORES
 	$db->exec('create table if not exists doctors (
         id integer primary key autoincrement,
+        dni text,
+		licence integer,
         first_name text,
         last_name text
     );');
 	
-	// CREAR TURNOS
-	$db->exec('create table if not exists turns (
-        id integer primary key autoincrement,
-        practice_id int not null,
-        doctor_id id not null,
-        time text,
-        available boolean default true,
-        foreign key (doctor_id) references doctors(id),
-        foreign key (practice_id) references practices(id)
-    );');
 
+	//$db->exec('drop table  turns;');
 	// CREAR TURNOS (FIJOS, debería haber un proceso que los genere)
 	$db->exec('create table if not exists turns (
         id integer primary key autoincrement,
-        practice_id int not null,
         doctor_id id not null,
         time text,
         available boolean default true,
-        foreign key (doctor_id) references doctors(id),
-        foreign key (practice_id) references practices(id)
+        foreign key (doctor_id) references doctors(id)
     );');
-	
+//        foreign key (doctor_id) references doctors(id),
+
+	//$db->exec('drop table  appointments;');
+
 	// CREAR CITAS
 	$db->exec('create table if not exists appointments (
         id integer primary key autoincrement,
@@ -60,8 +56,9 @@
         foreign key (doctor_id) references doctors(id),
         foreign key (user_id) references users(id)
     );');
-
+	
 	$resultado = $db->query('SELECT * FROM users');
+	echo date("Y-m-d H:i:s.000");
 	var_dump($resultado->fetchArray());
    }
 ?>
