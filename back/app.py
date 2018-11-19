@@ -7,7 +7,7 @@ import database as db
 app = Flask(__name__)
 CORS(app)
 
-db = db.DataBase('database.db')
+db = db.DataBase('database/database.db')
 
 
 @app.route('/')
@@ -45,7 +45,6 @@ def search_turns():
          }
     return jsonify([d])
 
-
 @app.route('/signup', methods=['POST'])
 def signup():
     try:
@@ -57,26 +56,21 @@ def signup():
         dni,
         first_name,
         last_name,
-        username,
-        birthday,
-        email,
-        password) values(?,?,?,?,?,?,?); 
+        password) values(?,?,?,?); 
         '''
 
         user = data['user']
 
-        credentials = (user['username'], user['password'])
+        credentials = (user['dni'], user['password'])
 
-        matching_users = db.query_database("select count(*) from users where username=? and password=?;", credentials)[0][0]
+        count_users = db.query_database("select count(*) from users where dni=? and password=?;", credentials)[0][0]
 
-        user = (user['dni'], user['first_name'], user['last_name'], user['username'], user['birthday'], user['email'], user['password'])
-
-        if (matching_users > 0):
+        if (count_users > 0):
             msg = "Attempted to create user {}, but a user with these credentials already exists!".format(user)
             app.logger.error(msg)
             return make_response("User credentials invalid!", 403)
 
-        db.modify_database(sql, user)
+        db.modify_database(sql, (user['dni'], user['first_name'], user['last_name'], user['password']))
 
         app.logger.info("Insert: created new user {}".format(user))
 
@@ -95,33 +89,35 @@ def signin():
 
         user = data['user']
 
-        credentials = (user['username'], user['password'])
+        credentials = (user['dni'], user['password'])
 
-        userid_matches = db.query_database("select * from users where username=? and password=?;", credentials)[0]
+        userid_matches = db.query_database("select * from users where dni=? and password=?;", credentials)
 
-        if len(userid_matches)==0:
+        if (len(userid_matches)==0):
             return make_response("User credentials invalid!", 403)
 
-        userid = userid_matches[0]
+        user_id = userid_matches[0]
 
-        app.logger.info("Found {} matching users for credentials {}".format(userid,credentials))
+        app.logger.info("Found {} matching users for credentials {}".format(user_id,credentials))
 
-        return make_response(jsonify(userid), 200)
+        return make_response(jsonify(user_id), 200)
     except Exception as e:
         return make_response("Error at signin! {}".format(e), 500)
 
 @app.route('/users', methods=['GET'])
 def users():
     app.logger.info('Hit /users')
-    users = db.query_database("select id, username, first_name, last_name, dni, birthday, email from users;")
+    users = db.query_database("select id, dni, first_name, last_name from users;")
     
     return make_response(jsonify(users=users), 200)
 
 @app.route('/users/<user_id>', methods=['GET'])
 def user_by_id(user_id):
     app.logger.info('Hit /users/{}'.format(user_id))
-    user = db.query_database("select id, username, first_name, last_name, birthday, email from users where id=?;", (user_id))[0]
-    return make_response(jsonify(user=user), 200)
+    user_matches = db.query_database("select id, dni, first_name, last_name from users where id=?;", (user_id))
+    if (len(user_matches) == 0):
+        return make_response(jsonify(user=()), 200)
+    return make_response(jsonify(user=user_matches[0]), 200)
 
 if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')

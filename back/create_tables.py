@@ -5,9 +5,6 @@ create_tables = {
         dni text,
         first_name text,
         last_name text,
-        username text,
-        birthday text,
-        email text,
         password text
     );
     ''',
