@@ -113,11 +113,56 @@ def users():
 
 @app.route('/users/<user_id>', methods=['GET'])
 def user_by_id(user_id):
-    app.logger.info('Hit /users/{}'.format(user_id))
+    app.logger.info('Hit GET /users/{}'.format(user_id))
     user_matches = db.query_database("select id, dni, first_name, last_name from users where id=?;", (user_id))
     if (len(user_matches) == 0):
         return make_response(jsonify(user=()), 200)
     return make_response(jsonify(user=user_matches[0]), 200)
+
+@app.route('/users/<user_id>', methods=['PUT'])
+def update_user(user_id):
+    app.logger.info('Hit PUT /users/{}'.format(user_id))
+    data = request.get_json()
+    user_matches = db.query_database("select count(*) from users where id=?;", (user_id))[0][0]
+
+    if (user_matches == 0):
+        return make_response("No user was found with id {}".format(user_id), 204)
+
+    user = data['user']
+
+    sql = '''
+        update users
+        set dni=?,
+        first_name=?,
+        last_name=? where id=?; 
+        '''
+    db.modify_database(sql, (user['dni'], user['first_name'], user['last_name'], user_id))
+
+    return make_response("Success!", 200)
+
+
+@app.route('/users/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    app.logger.info('Hit DELETE /users/{}'.format(user_id))
+    user_matches = db.query_database("select count(*) from users where id=?;", (user_id))[0][0]
+
+    if (user_matches == 0):
+        return make_response("No user was found with id {}".format(user_id), 204)
+
+    sql = '''
+        delete from users where id=?; 
+        '''
+    db.modify_database(sql, (user_id))
+
+    return make_response("Success!", 200)
+
+
+@app.route('/doctors', methods=['GET'])
+def doctors():
+    app.logger.info('Hit /doctors')
+    doctors = db.query_database("select * from doctors;")
+    
+    return make_response(jsonify(doctors=doctors), 200)
 
 if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
