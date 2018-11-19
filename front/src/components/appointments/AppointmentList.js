@@ -12,7 +12,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 let counter = 0;
 function createData(date, time, phisician, patient) {
@@ -79,51 +78,6 @@ AppointmentListHead.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
 };
-
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
-  },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  spacer: {
-    flex: '1 1 100%',
-  },
-  actions: {
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flex: '0 0 auto',
-  },
-});
-
-let AppointmentListToolbar = props => {
-  const { classes } = props;
-
-  return (
-    <Toolbar>
-      <div className={classes.title}>
-        <Typography variant="h6" id="tableTitle">
-          Appointments
-        </Typography>
-      </div>
-    </Toolbar>
-  );
-};
-
-AppointmentListToolbar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-AppointmentListToolbar = withStyles(toolbarStyles)(AppointmentListToolbar);
 
 const styles = theme => ({
   root: {
@@ -207,17 +161,17 @@ class AppointmentList extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  updateSearch(event) {
+  updateSearch = event => {
     this.setState({ search: event.target.value.substr(0, 20) });
-  }
+  };
 
-  updateStartDate(date) {
+  updateStartDate = date => {
     this.setState({ startDate: date });
-  }
+  };
 
-  updateEndDate(date) {
+  updateEndDate = date => {
     this.setState({ endDate: date });
-  }
+  };
 
   render() {
     let filteredItems = this.state.data.filter(listitem => {
@@ -239,11 +193,9 @@ class AppointmentList extends React.Component {
     return (
       <Paper className={classes.root}>
         <Toolbar>
-          <div className={classes.title}>
-            <Typography variant="h6" id="tableTitle">
-              Appointments
-            </Typography>
-          </div>
+          <Typography variant="h6" id="tableTitle">
+            Appointments
+          </Typography>
         </Toolbar>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
