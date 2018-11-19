@@ -21,40 +21,21 @@ function createData(date, time, phisician, patient) {
   return { id: counter, date, time, phisician, patient };
 }
 
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => desc(a, b, orderBy)
-    : (a, b) => -desc(a, b, orderBy);
-}
-
-const rows = [
-  { id: 'date', numeric: false, disablePadding: true, label: 'Date' },
-  { id: 'time', numeric: false, disablePadding: false, label: 'Time' },
-  { id: 'phisician', numeric: true, disablePadding: false, label: 'Phisician' },
-  { id: 'patient', numeric: true, disablePadding: false, label: 'Patient' },
-];
-
 class AppointmentListHead extends React.Component {
+  state = {
+    rows: [
+      { id: 'date', numeric: false, disablePadding: true, label: 'Date' },
+      { id: 'time', numeric: false, disablePadding: false, label: 'Time' },
+      {
+        id: 'phisician',
+        numeric: true,
+        disablePadding: false,
+        label: 'Phisician',
+      },
+      { id: 'patient', numeric: true, disablePadding: false, label: 'Patient' },
+    ],
+  };
+
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
@@ -65,7 +46,7 @@ class AppointmentListHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          {rows.map(row => {
+          {this.state.rows.map(row => {
             return (
               <TableCell
                 key={row.id}
@@ -182,6 +163,32 @@ class AppointmentList extends React.Component {
     endDate: null,
   };
 
+  desc = (a, b, orderBy) => {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  };
+
+  stableSort = (array, cmp) => {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map(el => el[0]);
+  };
+
+  getSorting = (order, orderBy) => {
+    return order === 'desc'
+      ? (a, b) => this.desc(a, b, orderBy)
+      : (a, b) => -this.desc(a, b, orderBy);
+  };
+
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -270,7 +277,7 @@ class AppointmentList extends React.Component {
             />
 
             <TableBody>
-              {stableSort(filteredItems, getSorting(order, orderBy))
+              {this.stableSort(filteredItems, this.getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   return (
