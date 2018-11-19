@@ -4,6 +4,11 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core';
+import axios from 'axios';
+
+const url_specialties = 'http://localhost:5555/back/get_specialties';
+const url_physicians = 'http://localhost:5555/back/get_physicians/';
+const url_dates = 'http://localhost:5555/back/get_dates/';
 
 const styles = theme => ({
   base: {
@@ -30,12 +35,14 @@ class AppointmentForm extends React.Component {
     this.state = {
       disablePhisicianSelector: true,
       disableDateSelector: true,
-      allSpecialities: this.getSpecialities(),
+      allSpecialities: [],
+      allSpecialitiesLoaded: false,
       selectedSpeciality: '',
       allPhisicians: [],
       selectedPhisician: '',
       allDates: [],
       selectedDate: '',
+      selectedTurnId: '',
     };
   }
 
@@ -46,12 +53,13 @@ class AppointmentForm extends React.Component {
   };
 
   selectSpeciality = event => {
+    console.log('seleccione especialidad')
     this.setState({
       selectedSpeciality: event.target.value,
       disablePhisicianSelector: false,
       disableDateSelector: true,
-      allPhisicians: this.props.serverConnector.getPhisicians(
-        event.target.value
+      allPhisicians: this.getPhisicians(
+        event.target.id
       ),
     });
   };
@@ -60,31 +68,63 @@ class AppointmentForm extends React.Component {
     this.setState({
       selectedPhisician: event.target.value,
       disableDateSelector: false,
-      allDates: this.props.serverConnector.getDates(
-        this.state.selectedSpeciality,
-        event.target.value
+      allDates: this.getDates(
+        event.target.id
       ),
     });
   };
 
   getSpecialities = () => {
-    return this.props.serverConnector.getSpecialities();
+    /*let res = this.props.serverConnector.getSpecialities();
+    console.log('sarasa');
+    this.setState({
+      allSpecialities: res,
+      specialtiesLoaded: true
+    });*/
+
+   axios.get(url_specialties).then(res => {
+    this.setState({
+      allSpecialities: res,
+      allSpecialitiesLoaded: true,
+    });
+   });
+   console.log('Specialties:')
+   console.log(this.state.allSpecialities);
+   console.log(this.state.allSpecialitiesLoaded);
   };
 
-  getPhisicians = () => {
+  getPhisicians = (specialty_id) => {
+    /*
     this.setState({
       allPhisicians: this.props.serverConnector.getPhisicians(
         this.state.selectedSpeciality
       ),
     });
+    */
+    axios.get(url_physicians + specialty_id).then(res => {
+    this.setState({
+      allPhisicians: res,
+    });
+   });
+   console.log('Medicos:')
+   console.log(this.state.allPhisicians);
   };
 
-  getDates = () => {
+  getDates = (doctor_specialty_id) => {
+    /*
     this.setState({
       allDates: this.props.serverConnector.getDates(
         this.state.selectedPhisician
       ),
     });
+    */
+    axios.get(url_dates + doctor_specialty_id).then(res => {
+    this.setState({
+      allDates: res,
+    });
+   });
+   console.log('Fechas:')
+   console.log(this.state.allDates);
   };
 
   setAppointment = () => {
@@ -93,7 +133,15 @@ class AppointmentForm extends React.Component {
 
   render() {
     const { classes } = this.props;
+    const { allSpecialitiesLoaded } = this.state;
+    //const { allPhisicians } = this.state;
+    //const { allDates } = this.state;
+
+    this.getSpecialities();
+
     return (
+      <div>
+      {allSpecialitiesLoaded && (
       <Card className={classes.base}>
         <CardHeader title="Nuevo turno" />
         <CardContent>
@@ -101,7 +149,7 @@ class AppointmentForm extends React.Component {
             select
             label="Especialidad"
             className={classes.textField}
-            value={this.state.selectedSpeciality.label}
+            value={this.state.selectedSpeciality.value}
             onChange={this.selectSpeciality}
             SelectProps={{
               native: true,
@@ -109,7 +157,7 @@ class AppointmentForm extends React.Component {
             helperText="Por favor seleccione una especialidad"
             margin="normal"
           >
-            {this.state.allSpecialities.map(speciality => (
+            {this.state.allSpecialities.data.map(speciality => (
               <option key={speciality} value={speciality}>
                 {speciality}
               </option>
@@ -131,7 +179,7 @@ class AppointmentForm extends React.Component {
               shrink: true,
             }}
           >
-            {this.state.allPhisicians.map(phisician => (
+            {this.state.allPhisicians.data.map(phisician => (
               <option key={phisician} value={phisician}>
                 {phisician}
               </option>
@@ -153,7 +201,7 @@ class AppointmentForm extends React.Component {
               shrink: true,
             }}
           >
-            {this.state.allDates.map(date => (
+            {this.state.allDates.data.map(date => (
               <option key={date} value={date}>
                 {date}
               </option>
@@ -170,6 +218,8 @@ class AppointmentForm extends React.Component {
           </Button>
         </CardActions>
       </Card>
+      )}
+      </div>
     );
   }
 }
