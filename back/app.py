@@ -23,12 +23,12 @@ def search_turns():
     sql = '''
     select
         t.id,
-        p.name as practice,
+        p.name as specialty,
         concat(d.first_name, ' ', d.last_name) as doctor_name,
         t.time,
     from turns t
     join doctors d on d.id = t.doctor_id
-    join practices p on p.id = t.practice_id
+    join specialties p on p.id = t.specialties
     where t.available
         and (p.name like '%{key}%' or
              d.first_name like '%{key}%' or
@@ -38,12 +38,21 @@ def search_turns():
     ;
     '''
 
-    d = {'id': 1,
-         'practice': 'Guardia',
-         'doctor': key,
-         'time': '2018-11-07 13:00'
-         }
-    return jsonify([d])
+    d = [{
+            'id': 1,
+            'specialty': 'Guardia',
+            'doctor': key,
+            'time': '2018-11-07 13:00'
+         },
+         {
+            'id': 2,
+            'specialty': 'asd',
+            'doctor': key,
+            'time': '2018-12-07 13:00'
+         }]
+
+    return jsonify(d)
+
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -51,12 +60,12 @@ def signup():
         app.logger.info('Hit /signup')
         data = request.get_json()
         app.logger.info(data)
-        sql ='''
+        sql = '''
         insert into users(
         dni,
         first_name,
         last_name,
-        password) values(?,?,?,?); 
+        password) values(?,?,?,?);
         '''
 
         user = data['user']
@@ -104,12 +113,14 @@ def signin():
     except Exception as e:
         return make_response("Error at signin! {}".format(e), 500)
 
+
 @app.route('/users', methods=['GET'])
 def users():
     app.logger.info('Hit /users')
     users = db.query_database("select id, dni, first_name, last_name from users;")
-    
+
     return make_response(jsonify(users=users), 200)
+
 
 @app.route('/users/<user_id>', methods=['GET'])
 def user_by_id(user_id):
@@ -118,6 +129,55 @@ def user_by_id(user_id):
     if (len(user_matches) == 0):
         return make_response(jsonify(user=()), 200)
     return make_response(jsonify(user=user_matches[0]), 200)
+
+
+@app.route('/get_specialties', methods=['GET'])
+def get_specialties():
+    app.logger.info('Hit /get_specialties')
+    res = db.query_database('select id, name from specialties;')
+
+    dic = [{'id': x[0], 'value':x[1]} for x in res]
+    app.logger.info(dic)
+
+    return make_response(jsonify(dic), 200)
+
+
+@app.route('/get_physicians/<specialty_id>', methods=['GET'])
+def get_physicians(specialty_id):
+    app.logger.info('Hit /get_physicians/%s', specialty_id)
+    sql = '''
+    select
+        ds.id,
+        'Dr. ' || d.last_name as doctor
+    from doctors_specialties ds
+    join doctors d on d.id = ds.doctor_id
+    where ds.specialty_id = ?
+    '''
+    res = db.query_database(sql, (specialty_id))
+
+    dic = [{'id': x[0], 'value':x[1]} for x in res]
+    app.logger.info(dic)
+
+    return make_response(jsonify(dic), 200)
+
+
+@app.route('/get_dates/<doctor_specialty_id>', methods=['GET'])
+def get_dates(doctor_specialty_id):
+    app.logger.info('Hit /get_dates/%s', doctor_specialty_id)
+    sql = '''
+    select
+        id,
+        time
+    from turns
+    where available = 'true' and doctor_specialty_id = ?
+    ;
+    '''
+    res = db.query_database(sql, (doctor_specialty_id))
+
+    dic = [{'id': x[0], 'value':x[1]} for x in res]
+    app.logger.info(dic)
+
+    return make_response(jsonify(dic), 200)
 
 if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
