@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button'
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -12,10 +12,9 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
 import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
-import qs from 'querystring';
 
-const base_url = 'http://localhost:5555/back'
-const success = 200
+const base_url = 'http://localhost:5555/back';
+const success = 200;
 
 const styles = theme => ({
   margin: {
@@ -35,44 +34,48 @@ const styles = theme => ({
 
 class SignIn extends React.Component {
   state = {
-      id:-1,
-      name: '',
-      password: '',
-      showPassword: false,
-    };
-    
+    id: -1,
+    name: '',
+    password: '',
+    showPassword: false,
+  };
+
   handleChange = prop => event => {
-      this.setState({ [prop]: event.target.value });
+    this.setState({ [prop]: event.target.value });
   };
 
   handleClickShowPassword = () => {
-      this.setState(state => ({ showPassword: !state.showPassword }));
+    this.setState(state => ({ showPassword: !state.showPassword }));
   };
-    
-  handleSignIn = () => {
-      let url = base_url + '/signin'
-      try {
-          const user = { dni:this.state.name, password:this.state.password};
 
-          axios.post(url, {user}).then(res => {
-              console.log(res)
-              if (res.status == success){
-                  this.setState({id:res.data.user_id})
-                  console.log(res);
-                  console.log('Signing in...');
-                  this.props.setIsAuthenticated(true);
-                  this.props.history.push('/appointments');
-              } else {
-                  console.log("Error at signin: " + res.status + res.statusText)
-                  alert("Error at signin: " + res.status + "-" + res.statusText)
-                  this.setState({id: -1, name: '', password: '', showPassword: false})
-              }
+  handleSignIn = () => {
+    let url = base_url + '/signin';
+    try {
+      const user = { dni: this.state.name, password: this.state.password };
+
+      axios.post(url, { user }).then(res => {
+        console.log(res);
+        if (res.status === success) {
+          this.setState({ id: res.data.user_id });
+          console.log(res);
+          console.log('Signing in...');
+          this.props.setIsAuthenticated(true);
+          this.props.history.push('/appointments');
+        } else {
+          console.log('Error at signin: ' + res.status + res.statusText);
+          alert('Error at signin: ' + res.status + '-' + res.statusText);
+          this.setState({
+            id: -1,
+            name: '',
+            password: '',
+            showPassword: false,
           });
-      } catch(err) {
-         console.log(err);
-      }
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
-    
 
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value });
