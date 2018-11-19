@@ -13,7 +13,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 
-const base_url = 'http://localhost:8000'
+const base_url = 'http://localhost:5555/back'
 const create_success = 201
 
 const styles = theme => ({
@@ -55,9 +55,7 @@ class SignUp extends React.Component {
     handleRegister = () => {
         let url = base_url + '/signup'
         try {
-            const user = {dni:this.state.dni, first_name:this.state.firstName,
-            last_name:this.state.lastName, username:this.state.username, birthday:this.state.birthday, email:this.state.mail,
-            password:this.state.password};
+            const user = {dni:this.state.dni, first_name:this.state.firstName, last_name:this.state.lastName, username:this.state.username, birthday:this.state.birthday, email:this.state.mail, password:this.state.password};
 
             axios.post(url, {user}).then(res => {
                 console.log(res)
@@ -67,7 +65,7 @@ class SignUp extends React.Component {
                 } else {
                     console.log("Error creating user: " + res.status + res.statusText)
                     alert("Error creating user: " + res.status + "-" + res.statusText)
-                    this.state = {}
+                    this.setState({dni: '',firstName: '', lastName: '', birthday: '', mail: '', username: '', password: '', showPassword: false})
                 }
             });
         } catch(err) {

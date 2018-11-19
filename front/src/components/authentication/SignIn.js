@@ -13,7 +13,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { CardContent, CardActions, CardHeader } from '@material-ui/core';
 import { Link } from 'react-router-dom'
 
-const base_url = 'http://localhost:8000'
+const base_url = 'http://localhost:5555/back'
 const success = 200
 
 const styles = theme => ({
@@ -34,6 +34,7 @@ const styles = theme => ({
 
 class SignIn extends React.Component {
     state = {
+        id:-1,
         name: '',
         password: '',
         showPassword: false,
@@ -56,11 +57,12 @@ class SignIn extends React.Component {
                 console.log(res)
                 if (res.status == success){
                     console.log(res)
+                    this.setState({id:res.data.userid})
                     alert("Success!")
                 } else {
-                    console.log("Error creating user: " + res.status + res.statusText)
-                    alert("Error creating user: " + res.status + "-" + res.statusText)
-                    this.state = {}
+                    console.log("Error at signin: " + res.status + res.statusText)
+                    alert("Error at signin: " + res.status + "-" + res.statusText)
+                    this.setState({dni: '',firstName: '', lastName: '', birthday: '', mail: '', username: '', password: '', showPassword: false})
                 }
             });
         } catch(err) {
