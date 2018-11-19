@@ -13,7 +13,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
-import 'react-datepicker/dist/react-datepicker.css';
 
 let counter = 0;
 function createData(date, time, phisician, patient) {
@@ -159,7 +158,7 @@ class AppointmentList extends React.Component {
     page: 0,
     rowsPerPage: 5,
     search: '',
-    sartDate: '', //moment().startOf('month').format('DD/MM/YYYY'),
+    sartDate: '',
     endDate: null,
   };
 
@@ -230,8 +229,6 @@ class AppointmentList extends React.Component {
           .toLowerCase()
           .indexOf(this.state.search.toLowerCase()) !== -1
       );
-      // && moment(listitem.date).isSameOrAfter(this.startDate,'year')
-      // && (!this.endDate || moment(listitem.date).isSameOrBefore(this.endDate,'year'));
     });
 
     const { classes } = this.props;
@@ -247,26 +244,6 @@ class AppointmentList extends React.Component {
               Appointments
             </Typography>
           </div>
-          <br />
-          {/* <div>
-                  <input type="text" value={this.state.search} onChange={this.updateSearch.bind(this)}/>
-              </div>
-              <div>
-                  <DatePicker
-                      selected={this.state.startDate}
-                      onChange={this.updateStartDate.bind(this)}
-                      showTimeSelect
-                      dateFormat="LLL"
-                  />
-              </div>
-              <div>
-                  <DatePicker
-                      selected={this.state.endDate}
-                      onChange={this.updateEndDate.bind(this)}
-                      showTimeSelect
-                      dateFormat="LLL"
-                  />
-              </div> */}
         </Toolbar>
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
