@@ -12,49 +12,27 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
-import { lighten } from '@material-ui/core/styles/colorManipulator';
-import 'react-datepicker/dist/react-datepicker.css';
 
 let counter = 0;
-function createData(date, time, phisician, patient) {
+function createData(date, time, phisician) {
   counter += 1;
-  return { id: counter, date, time, phisician, patient };
+  return { id: counter, date, time, phisician };
 }
-
-function desc(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function stableSort(array, cmp) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = cmp(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map(el => el[0]);
-}
-
-function getSorting(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => desc(a, b, orderBy)
-    : (a, b) => -desc(a, b, orderBy);
-}
-
-const rows = [
-  { id: 'date', numeric: false, disablePadding: true, label: 'Date' },
-  { id: 'time', numeric: false, disablePadding: false, label: 'Time' },
-  { id: 'phisician', numeric: true, disablePadding: false, label: 'Phisician' },
-  { id: 'patient', numeric: true, disablePadding: false, label: 'Patient' },
-];
 
 class AppointmentListHead extends React.Component {
+  state = {
+    rows: [
+      { id: 'date', numeric: false, disablePadding: true, label: 'Fecha' },
+      { id: 'time', numeric: false, disablePadding: false, label: 'Hora' },
+      {
+        id: 'phisician',
+        numeric: true,
+        disablePadding: false,
+        label: 'Profesional',
+      },
+    ],
+  };
+
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
@@ -65,7 +43,7 @@ class AppointmentListHead extends React.Component {
     return (
       <TableHead>
         <TableRow>
-          {rows.map(row => {
+          {this.state.rows.map(row => {
             return (
               <TableCell
                 key={row.id}
@@ -100,58 +78,10 @@ AppointmentListHead.propTypes = {
   orderBy: PropTypes.string.isRequired,
 };
 
-const toolbarStyles = theme => ({
-  root: {
-    paddingRight: theme.spacing.unit,
-  },
-  highlight:
-    theme.palette.type === 'light'
-      ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
-      : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
-  spacer: {
-    flex: '1 1 100%',
-  },
-  actions: {
-    color: theme.palette.text.secondary,
-  },
-  title: {
-    flex: '0 0 auto',
-  },
-});
-
-let AppointmentListToolbar = props => {
-  const { classes } = props;
-
-  return (
-    <Toolbar>
-      <div className={classes.title}>
-        <Typography variant="h6" id="tableTitle">
-          Appointments
-        </Typography>
-      </div>
-    </Toolbar>
-  );
-};
-
-AppointmentListToolbar.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
-AppointmentListToolbar = withStyles(toolbarStyles)(AppointmentListToolbar);
-
 const styles = theme => ({
   root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-  },
-  table: {
-    minWidth: 1020,
+    width: '95%',
+    margin: '1em auto',
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -163,23 +93,51 @@ class AppointmentList extends React.Component {
     order: 'asc',
     orderBy: 'date',
     data: [
-      createData('15/01/2018', '10:00AM', 'Dr.Brown', 'Patient A'),
-      createData('04/11/2018', '10:00AM', 'Dr.Brown', 'Patient B'),
-      createData('12/01/2018', '10:00AM', 'Dr.Brown', 'Patient C'),
-      createData('15/03/2018', '10:00AM', 'Dr.Strange', 'Patient D'),
-      createData('17/05/2018', '10:00AM', 'Dr.Brown', 'Patient E'),
-      createData('18/05/2018', '10:00AM', 'Dr.Brown', 'Patient F'),
-      createData('19/01/2019', '10:00AM', 'Dr.Strange', 'Patient G'),
-      createData('11/02/2019', '10:00AM', 'Dr.Strange', 'Patient H'),
-      createData('13/02/2019', '10:00AM', 'Dr.Brown', 'Patient I'),
-      createData('05/03/2018', '10:00AM', 'Dr.Strange', 'Patient J'),
-      createData('17/06/2018', '10:00AM', 'Dr.Brown', 'Patient K'),
+      createData('15/01/2018', '10:00AM', 'Dr.Brown'),
+      createData('04/11/2018', '10:00AM', 'Dr.Brown'),
+      createData('12/01/2018', '10:00AM', 'Dr.Brown'),
+      createData('15/03/2018', '10:00AM', 'Dr.Strange'),
+      createData('17/05/2018', '10:00AM', 'Dr.Brown'),
+      createData('18/05/2018', '10:00AM', 'Dr.Brown'),
+      createData('19/01/2019', '10:00AM', 'Dr.Strange'),
+      createData('11/02/2019', '10:00AM', 'Dr.Strange'),
+      createData('13/02/2019', '10:00AM', 'Dr.Brown'),
+      createData('05/03/2018', '10:00AM', 'Dr.Strange'),
+      createData('17/06/2018', '10:00AM', 'Dr.Brown'),
     ],
     page: 0,
     rowsPerPage: 5,
     search: '',
-    sartDate: '', //moment().startOf('month').format('DD/MM/YYYY'),
+    sartDate: '',
     endDate: null,
+  };
+
+  getAppointments = () => {};
+
+  desc = (a, b, orderBy) => {
+    if (b[orderBy] < a[orderBy]) {
+      return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1;
+    }
+    return 0;
+  };
+
+  stableSort = (array, cmp) => {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+      const order = cmp(a[0], b[0]);
+      if (order !== 0) return order;
+      return a[1] - b[1];
+    });
+    return stabilizedThis.map(el => el[0]);
+  };
+
+  getSorting = (order, orderBy) => {
+    return order === 'desc'
+      ? (a, b) => this.desc(a, b, orderBy)
+      : (a, b) => -this.desc(a, b, orderBy);
   };
 
   handleRequestSort = (event, property) => {
@@ -201,20 +159,20 @@ class AppointmentList extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  updateSearch(event) {
+  updateSearch = event => {
     this.setState({ search: event.target.value.substr(0, 20) });
-  }
+  };
 
-  updateStartDate(date) {
+  updateStartDate = date => {
     this.setState({ startDate: date });
-  }
+  };
 
-  updateEndDate(date) {
+  updateEndDate = date => {
     this.setState({ endDate: date });
-  }
+  };
 
   render() {
-    let filteredItems = this.state.data.filter(listitem => {
+    const filteredItems = this.state.data.filter(listitem => {
       return (
         listitem.phisician
           .toLowerCase()
@@ -223,8 +181,6 @@ class AppointmentList extends React.Component {
           .toLowerCase()
           .indexOf(this.state.search.toLowerCase()) !== -1
       );
-      // && moment(listitem.date).isSameOrAfter(this.startDate,'year')
-      // && (!this.endDate || moment(listitem.date).isSameOrBefore(this.endDate,'year'));
     });
 
     const { classes } = this.props;
@@ -235,34 +191,12 @@ class AppointmentList extends React.Component {
     return (
       <Paper className={classes.root}>
         <Toolbar>
-          <div className={classes.title}>
-            <Typography variant="h6" id="tableTitle">
-              Appointments
-            </Typography>
-          </div>
-          <br />
-          {/* <div>
-                  <input type="text" value={this.state.search} onChange={this.updateSearch.bind(this)}/>
-              </div>
-              <div>
-                  <DatePicker
-                      selected={this.state.startDate}
-                      onChange={this.updateStartDate.bind(this)}
-                      showTimeSelect
-                      dateFormat="LLL"
-                  />
-              </div>
-              <div>
-                  <DatePicker
-                      selected={this.state.endDate}
-                      onChange={this.updateEndDate.bind(this)}
-                      showTimeSelect
-                      dateFormat="LLL"
-                  />
-              </div> */}
+          <Typography variant="h6" id="tableTitle">
+            Appointments
+          </Typography>
         </Toolbar>
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
+          <Table aria-labelledby="tableTitle">
             <AppointmentListHead
               order={order}
               orderBy={orderBy}
@@ -270,7 +204,7 @@ class AppointmentList extends React.Component {
             />
 
             <TableBody>
-              {stableSort(filteredItems, getSorting(order, orderBy))
+              {this.stableSort(filteredItems, this.getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   return (
@@ -282,7 +216,6 @@ class AppointmentList extends React.Component {
                         {n.time}
                       </TableCell>
                       <TableCell numeric>{n.phisician}</TableCell>
-                      <TableCell numeric>{n.patient}</TableCell>
                     </TableRow>
                   );
                 })}

@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button'
+import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -17,10 +17,9 @@ import {
 } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import qs from 'querystring';
 
-const base_url = 'http://localhost:5555/back'
-const create_success = 201
+const base_url = 'http://localhost:5555/back';
+const create_success = 201;
 
 const styles = theme => ({
   margin: {
@@ -59,22 +58,37 @@ class SignUp extends React.Component {
   };
 
   handleRegister = () => {
-      let url = base_url + '/signup'
-      try {
-          const user = {dni:this.state.dni, first_name:this.state.firstName, last_name:this.state.lastName, birthday:this.state.birthday, email:this.state.mail, password:this.state.password};
+    let url = base_url + '/signup';
+    try {
+      const user = {
+        dni: this.state.dni,
+        first_name: this.state.firstName,
+        last_name: this.state.lastName,
+        birthday: this.state.birthday,
+        email: this.state.mail,
+        password: this.state.password,
+      };
 
-          axios.post(url, {user}).then(res => {
-              console.log(res)
-              if (res.status == create_success){
-                  console.log(res)
-              } else {
-                  console.log("Error creating user: " + res.status + res.statusText)
-                  this.setState({dni: '',firstName: '', lastName: '', birthday: '', mail: '', password: '', showPassword: false})
-              }
+      axios.post(url, { user }).then(res => {
+        console.log(res);
+        if (res.status === create_success) {
+          console.log(res);
+        } else {
+          console.log('Error creating user: ' + res.status + res.statusText);
+          this.setState({
+            dni: '',
+            firstName: '',
+            lastName: '',
+            birthday: '',
+            mail: '',
+            password: '',
+            showPassword: false,
           });
-      } catch(err) {
-          console.log(err);
-      }
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   handleClickShowPassword = () => {
