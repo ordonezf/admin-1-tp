@@ -59,7 +59,7 @@ class SignIn extends React.Component {
           this.setState({ id: res.data.user_id });
           console.log(res);
           console.log('Signing in...');
-          this.props.setIsAuthenticated(true);
+          this.props.setIsAuthenticated(res.data.user_id);
           this.props.history.push('/appointments');
         } else {
           console.log('Error at signin: ' + res.status + res.statusText);
