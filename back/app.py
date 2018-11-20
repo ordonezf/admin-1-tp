@@ -116,19 +116,111 @@ def signin():
 
 @app.route('/users', methods=['GET'])
 def users():
-    app.logger.info('Hit /users')
-    users = db.query_database("select id, dni, first_name, last_name from users;")
+    try:
+        app.logger.info('Hit /users')
+        users = db.query_database("select id, dni, first_name, last_name from users;")
+    
+        return make_response(jsonify(users=users), 200)
 
-    return make_response(jsonify(users=users), 200)
+    except Exception as e:
+        return make_response("Error fetching users! {}".format(e), 500)
 
 
 @app.route('/users/<user_id>', methods=['GET'])
 def user_by_id(user_id):
-    app.logger.info('Hit /users/{}'.format(user_id))
-    user_matches = db.query_database("select id, dni, first_name, last_name from users where id=?;", (user_id))
-    if (len(user_matches) == 0):
-        return make_response(jsonify(user=()), 200)
-    return make_response(jsonify(user=user_matches[0]), 200)
+    try:
+        app.logger.info('Hit GET /users/{}'.format(user_id))
+        user_matches = db.query_database("select id, dni, first_name, last_name from users where id=?;", (user_id))
+        if (len(user_matches) == 0):
+            return make_response(jsonify(user=()), 200)
+        return make_response(jsonify(user=user_matches[0]), 200)
+
+    except Exception as e:
+        return make_response("Error fetching user {}! {}".format(user_id, e), 500)
+
+@app.route('/users/<user_id>', methods=['PUT'])
+def update_user(user_id):
+    try:
+        app.logger.info('Hit PUT /users/{}'.format(user_id))
+        data = request.get_json()
+        user_matches = db.query_database("select count(*) from users where id=?;", (user_id))[0][0]
+
+        if (user_matches == 0):
+            return make_response("No user was found with id {}".format(user_id), 204)
+
+        user = data['user']
+
+        sql = '''
+            update users
+            set dni=?,
+            first_name=?,
+            last_name=? where id=?; 
+            '''
+        db.modify_database(sql, (user['dni'], user['first_name'], user['last_name'], user_id))
+
+        return make_response("Success!", 200)
+    
+    except Exception as e:
+        return make_response("Error updating user {}! {}".format(user_id, e), 500)
+
+@app.route('/users/<user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    try:
+        app.logger.info('Hit DELETE /users/{}'.format(user_id))
+        user_matches = db.query_database("select count(*) from users where id=?;", (user_id))[0][0]
+
+        if (user_matches == 0):
+            return make_response("No user was found with id {}".format(user_id), 204)
+
+        sql = '''
+            delete from users where id=?; 
+            '''
+        db.modify_database(sql, (user_id))
+
+        return make_response("Success!", 200)
+
+
+    except Exception as e:
+        app.logger.error("Error deleting user {}! {}".format(user_id, e))
+        return make_response("Error deleting user {}! {}".format(user_id, e), 500)
+
+@app.route('/doctors', methods=['GET'])
+def doctors():
+    try:
+        app.logger.info('Hit /doctors')
+        doctors = db.query_database("select * from doctors;")
+    
+        return make_response(jsonify(doctors=doctors), 200)
+
+    except Exception as e:
+        app.logger.error("Error fetching doctors! {}".format(e))
+        return make_response("Error fetching doctors! {}".format(e), 500)
+
+
+@app.route('/doctors', methods=['POST'])
+def create_doctor():
+    try:
+        app.logger.info('Hit POST /doctors')
+        data = request.get_json()
+        app.logger.info(data)
+        sql ='''
+            insert into doctors(
+            first_name,
+            last_name) values(?,?); 
+            '''
+
+        doctor = data['doctor']
+        db.modify_database(sql, (doctor['first_name'], doctor['last_name']))
+
+        app.logger.info("Insert: created new doctor {}".format(doctor))
+
+        return make_response("Successfully created doctor!", 201)
+    except Exception as e:
+        app.logger.error("Error creating new doctor {} : {}".format(doctor, e))
+        return make_response("Error creating doctor! {}".format(e), 500)
+
+    
+    return make_response(jsonify(doctors=doctors), 200)
 
 
 @app.route('/get_specialties', methods=['GET'])
