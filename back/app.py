@@ -1,5 +1,6 @@
 import logging
 from flask_cors import CORS
+from datetime import datetime as dt
 from flask import Flask, request, jsonify, make_response
 
 import database as db
@@ -15,43 +16,32 @@ def root():
     return 'Go to /search_turns'
 
 
-@app.route('/search_turns')
-def search_turns():
-    app.logger.info('Hit /search_turns')
-    key = request.args.get('search').lower()
-    app.logger.info(key)
+@app.route('/search_turns/<search>', methods=['GET'])
+def search_turns(search):
+    app.logger.info('Hit /search_turns/%s', search)
     sql = '''
     select
         t.id,
-        p.name as specialty,
-        concat(d.first_name, ' ', d.last_name) as doctor_name,
-        t.time,
+        s.name as specialty,
+        d.first_name || ' ' || d.last_name as doctor_name,
+        t.time
     from turns t
-    join doctors d on d.id = t.doctor_id
-    join specialties p on p.id = t.specialties
-    where t.available
-        and (p.name like '%{key}%' or
+    join doctors_specialties ds on ds.id = t.doctor_specialty_id
+    join doctors d on d.id = ds.doctor_id
+    join specialties s on s.id = ds.specialty_id
+    where t.available = 'true'
+        and (s.name like '%{key}%' or
              d.first_name like '%{key}%' or
-             d.last_name like '%{key}%' or
+             d.last_name like '%{key}%'
              )
     order by t.time desc
     ;
-    '''
+    '''.format(key=search)
 
-    d = [{
-            'id': 1,
-            'specialty': 'Guardia',
-            'doctor': key,
-            'time': '2018-11-07 13:00'
-         },
-         {
-            'id': 2,
-            'specialty': 'asd',
-            'doctor': key,
-            'time': '2018-12-07 13:00'
-         }]
+    res = db.query_database(sql)
+    d = [{'id': x[0], 'practice': x[1], 'doctor': x[2], 'time': x[3]} for x in res]
 
-    return jsonify(d)
+    return make_response(jsonify(d), 200)
 
 
 @app.route('/signup', methods=['POST'])
@@ -108,8 +98,9 @@ def signin():
         user_id = userid_matches[0]
 
         app.logger.info("Found {} matching users for credentials {}".format(user_id,credentials))
+        d = {'user_id': user_id[0]}
 
-        return make_response(jsonify(user_id), 200)
+        return make_response(jsonify(d), 200)
     except Exception as e:
         return make_response("Error at signin! {}".format(e), 500)
 
@@ -119,7 +110,7 @@ def users():
     try:
         app.logger.info('Hit /users')
         users = db.query_database("select id, dni, first_name, last_name from users;")
-    
+
         return make_response(jsonify(users=users), 200)
 
     except Exception as e:
@@ -137,6 +128,7 @@ def user_by_id(user_id):
 
     except Exception as e:
         return make_response("Error fetching user {}! {}".format(user_id, e), 500)
+
 
 @app.route('/users/<user_id>', methods=['PUT'])
 def update_user(user_id):
@@ -159,9 +151,10 @@ def update_user(user_id):
         db.modify_database(sql, (user['dni'], user['first_name'], user['last_name'], user_id))
 
         return make_response("Success!", 200)
-    
+
     except Exception as e:
         return make_response("Error updating user {}! {}".format(user_id, e), 500)
+
 
 @app.route('/users/<user_id>', methods=['DELETE'])
 def delete_user(user_id):
@@ -179,17 +172,17 @@ def delete_user(user_id):
 
         return make_response("Success!", 200)
 
-
     except Exception as e:
         app.logger.error("Error deleting user {}! {}".format(user_id, e))
         return make_response("Error deleting user {}! {}".format(user_id, e), 500)
+
 
 @app.route('/doctors', methods=['GET'])
 def doctors():
     try:
         app.logger.info('Hit /doctors')
         doctors = db.query_database("select * from doctors;")
-    
+
         return make_response(jsonify(doctors=doctors), 200)
 
     except Exception as e:
@@ -203,10 +196,10 @@ def create_doctor():
         app.logger.info('Hit POST /doctors')
         data = request.get_json()
         app.logger.info(data)
-        sql ='''
+        sql = '''
             insert into doctors(
             first_name,
-            last_name) values(?,?); 
+            last_name) values(?,?);
             '''
 
         doctor = data['doctor']
@@ -219,7 +212,6 @@ def create_doctor():
         app.logger.error("Error creating new doctor {} : {}".format(doctor, e))
         return make_response("Error creating doctor! {}".format(e), 500)
 
-    
     return make_response(jsonify(doctors=doctors), 200)
 
 
@@ -270,6 +262,37 @@ def get_dates(doctor_specialty_id):
     app.logger.info(dic)
 
     return make_response(jsonify(dic), 200)
+
+
+@app.route('/new_appointment', methods=['POST'])
+def new_appointment():
+    app.logger.info('Hit /new_appointment')
+    data = request.get_json()
+    turn = data['turn']
+    now = dt.now().strftime('%Y-%m-%d %H:%M')
+    app.logger.info(turn)
+    app.logger.info('check if turn is reserved')
+    turn_id = [turn['turn_id']]
+    is_available = db.query_database('''select available from turns where id = ?''', turn_id)[0][0]
+    app.logger.info(is_available)
+    if is_available == 'false':
+        app.logger.info('Turn is reserved')
+        return make_response('Error: turn is occupied!', 205)
+    app.logger.info('Reserving turn')
+    db.modify_database('''update turns set available = "false" where id = ? ''', turn_id)
+
+    sql = '''
+    insert into appointments (user_id, turn_id, created_at, deleted_at)
+    values
+        (?,?,?,null)
+    ;
+    '''
+    payload = (turn['user_id'], turn['turn_id'], now)
+
+    db.modify_database(sql, payload)
+    app.logger.info('New appointment')
+    return make_response('Successfully created appointment!', 200)
+
 
 if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
