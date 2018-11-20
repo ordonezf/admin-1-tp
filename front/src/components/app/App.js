@@ -52,10 +52,12 @@ class App extends React.Component {
             component={SearchAppointments}
             isAuthenticated={this.state.isAuthenticated}
           />
-          <PrivateRoute
+          <Route
             path="/appointments"
-            component={AppointmentList}
             isAuthenticated={this.state.isAuthenticated}
+            render={() => (
+              <AppointmentList getUserId={this.getUserId} />
+            )}
           />
           <Route
             path="/newappointment"
