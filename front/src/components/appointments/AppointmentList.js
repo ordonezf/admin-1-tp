@@ -12,6 +12,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
+import { Button } from '@material-ui/core';
 
 let counter = 0;
 function createData(date, time, phisician) {
@@ -22,14 +23,9 @@ function createData(date, time, phisician) {
 class AppointmentListHead extends React.Component {
   state = {
     rows: [
-      { id: 'date', numeric: false, disablePadding: true, label: 'Fecha' },
-      { id: 'time', numeric: false, disablePadding: false, label: 'Hora' },
-      {
-        id: 'phisician',
-        numeric: true,
-        disablePadding: false,
-        label: 'Profesional',
-      },
+      { id: 'date', numeric: false, label: 'Fecha' },
+      { id: 'time', numeric: false, label: 'Hora' },
+      { id: 'phisician', numeric: false, label: 'Profesional' },
     ],
   };
 
@@ -38,7 +34,7 @@ class AppointmentListHead extends React.Component {
   };
 
   render() {
-    const { order, orderBy } = this.props;
+    const { classes, order, orderBy } = this.props;
 
     return (
       <TableHead>
@@ -66,6 +62,13 @@ class AppointmentListHead extends React.Component {
               </TableCell>
             );
           }, this)}
+          <TableCell
+            className={classes.headCell}
+            key="cancelAppointment"
+            padding="dense"
+          >
+            Cancelar turno
+          </TableCell>
         </TableRow>
       </TableHead>
     );
@@ -85,6 +88,9 @@ const styles = theme => ({
   },
   tableWrapper: {
     overflowX: 'auto',
+  },
+  headCell: {
+    textAlign: 'center',
   },
 });
 
@@ -107,9 +113,6 @@ class AppointmentList extends React.Component {
     ],
     page: 0,
     rowsPerPage: 5,
-    search: '',
-    sartDate: '',
-    endDate: null,
   };
 
   getAppointments = () => {};
@@ -159,30 +162,12 @@ class AppointmentList extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  updateSearch = event => {
-    this.setState({ search: event.target.value.substr(0, 20) });
-  };
-
-  updateStartDate = date => {
-    this.setState({ startDate: date });
-  };
-
-  updateEndDate = date => {
-    this.setState({ endDate: date });
+  cancelAppointment = appointment => event => {
+    console.log('Cancelled turn:');
+    console.log(appointment);
   };
 
   render() {
-    const filteredItems = this.state.data.filter(listitem => {
-      return (
-        listitem.phisician
-          .toLowerCase()
-          .indexOf(this.state.search.toLowerCase()) !== -1 ||
-        listitem.patient
-          .toLowerCase()
-          .indexOf(this.state.search.toLowerCase()) !== -1
-      );
-    });
-
     const { classes } = this.props;
     const { data, order, orderBy, rowsPerPage, page } = this.state;
     const emptyRows =
@@ -198,24 +183,29 @@ class AppointmentList extends React.Component {
         <div className={classes.tableWrapper}>
           <Table aria-labelledby="tableTitle">
             <AppointmentListHead
+              classes={classes}
               order={order}
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
             />
 
             <TableBody>
-              {this.stableSort(filteredItems, this.getSorting(order, orderBy))
+              {this.stableSort(this.state.data, this.getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
                   return (
                     <TableRow hover key={n.id}>
-                      <TableCell component="th" scope="row">
-                        {n.date}
+                      <TableCell>{n.date}</TableCell>
+                      <TableCell>{n.time}</TableCell>
+                      <TableCell>{n.phisician}</TableCell>
+                      <TableCell className={classes.headCell}>
+                        <Button
+                          onClick={this.cancelAppointment(n)}
+                          color="secondary"
+                        >
+                          Cancelar turno
+                        </Button>
                       </TableCell>
-                      <TableCell component="th" scope="row">
-                        {n.time}
-                      </TableCell>
-                      <TableCell numeric>{n.phisician}</TableCell>
                     </TableRow>
                   );
                 })}
