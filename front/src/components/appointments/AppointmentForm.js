@@ -40,8 +40,10 @@ class AppointmentForm extends React.Component {
       selectedSpeciality: '',
       allPhisicians: [],
       selectedPhisician: '',
+      allPhisiciansLoaded: false,
       allDates: [],
       selectedDate: '',
+      allDatesLoaded: false,
       selectedTurnId: '',
     };
   }
@@ -53,13 +55,12 @@ class AppointmentForm extends React.Component {
   };
 
   selectSpeciality = event => {
-    console.log('seleccione especialidad')
     this.setState({
       selectedSpeciality: event.target.value,
       disablePhisicianSelector: false,
       disableDateSelector: true,
       allPhisicians: this.getPhisicians(
-        event.target.id
+        event.target.value
       ),
     });
   };
@@ -69,14 +70,20 @@ class AppointmentForm extends React.Component {
       selectedPhisician: event.target.value,
       disableDateSelector: false,
       allDates: this.getDates(
-        event.target.id
+        event.target.value
       ),
+    });
+  };
+
+  selectDate = event => {
+    this.setState({
+      selectedDate: event.target.value,
+      disableDateSelector: false,
     });
   };
 
   getSpecialities = () => {
     /*let res = this.props.serverConnector.getSpecialities();
-    console.log('sarasa');
     this.setState({
       allSpecialities: res,
       specialtiesLoaded: true
@@ -104,6 +111,7 @@ class AppointmentForm extends React.Component {
     axios.get(url_physicians + specialty_id).then(res => {
     this.setState({
       allPhisicians: res,
+      allPhisiciansLoaded: true,
     });
    });
    console.log('Medicos:')
@@ -121,6 +129,7 @@ class AppointmentForm extends React.Component {
     axios.get(url_dates + doctor_specialty_id).then(res => {
     this.setState({
       allDates: res,
+      allDatesLoaded: true,
     });
    });
    console.log('Fechas:')
@@ -129,25 +138,27 @@ class AppointmentForm extends React.Component {
 
   setAppointment = () => {
     console.log('Appointment set');
+    console.log(this.state.selectedDate);
   };
 
   render() {
     const { classes } = this.props;
     const { allSpecialitiesLoaded } = this.state;
-    //const { allPhisicians } = this.state;
-    //const { allDates } = this.state;
+    const { allPhisiciansLoaded } = this.state;
+    const { allDatesLoaded } = this.state;
 
-    this.getSpecialities();
+    if (!allSpecialitiesLoaded){
+      this.getSpecialities();
+    }
 
     return (
-      <div>
-      {allSpecialitiesLoaded && (
       <Card className={classes.base}>
         <CardHeader title="Nuevo turno" />
         <CardContent>
           <TextField
             select
             label="Especialidad"
+            defaultValue="Default Value"
             className={classes.textField}
             value={this.state.selectedSpeciality.value}
             onChange={this.selectSpeciality}
@@ -157,17 +168,18 @@ class AppointmentForm extends React.Component {
             helperText="Por favor seleccione una especialidad"
             margin="normal"
           >
-            {this.state.allSpecialities.data.map(speciality => (
-              <option key={speciality} value={speciality}>
-                {speciality}
+            {allSpecialitiesLoaded ? this.state.allSpecialities.data.map(speciality => (
+              <option key={speciality.value} value={speciality.id}>
+                {speciality.value}
               </option>
-            ))}
+            )) : null}
           </TextField>
           <br />
           <TextField
             disabled={this.state.disablePhisicianSelector}
             select
             label="Profesional"
+            defaultValue="Default Value"
             className={classes.textField}
             onChange={this.selectPhisician}
             SelectProps={{
@@ -179,19 +191,20 @@ class AppointmentForm extends React.Component {
               shrink: true,
             }}
           >
-            {this.state.allPhisicians.data.map(phisician => (
-              <option key={phisician} value={phisician}>
-                {phisician}
+            {allPhisiciansLoaded ? this.state.allPhisicians.data.map(phisician => (
+              <option key={phisician.value} value={phisician.id}>
+                {phisician.value}
               </option>
-            ))}
+            )) : null}
           </TextField>
           <br />
           <TextField
             disabled={this.state.disableDateSelector}
             select
             label="Fecha"
+            defaultValue="Default Value"
             className={classes.textField}
-            onChange={this.handleChange('selectedDate')}
+            onChange={this.selectDate}
             SelectProps={{
               native: true,
             }}
@@ -201,11 +214,11 @@ class AppointmentForm extends React.Component {
               shrink: true,
             }}
           >
-            {this.state.allDates.data.map(date => (
-              <option key={date} value={date}>
-                {date}
+            {allDatesLoaded ? this.state.allDates.data.map(date => (
+              <option key={date.value} value={date.id}>
+                {date.value}
               </option>
-            ))}
+            )) : null}
           </TextField>
         </CardContent>
         <CardActions>
@@ -218,8 +231,6 @@ class AppointmentForm extends React.Component {
           </Button>
         </CardActions>
       </Card>
-      )}
-      </div>
     );
   }
 }
