@@ -14,15 +14,21 @@ class App extends React.Component {
   state = {
     isAuthenticated: false,
     serverConnector: new ServerConnector(),
+    userId: -1,
   };
 
   setIsAuthenticated = value => {
     console.log(`Received value: ${value}`);
-    this.setState({ isAuthenticated: value });
+    this.setState({ isAuthenticated: true });
+    this.setState({ userId: value});
     console.log(
       `New value setted for isAuthenticated: ${this.state.isAuthenticated}`
     );
   };
+
+  getUserId = () => {
+    return this.state.userId;
+  }
 
   render() {
     window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
@@ -54,7 +60,7 @@ class App extends React.Component {
           <Route
             path="/newappointment"
             render={() => (
-              <AppointmentForm serverConnector={this.state.serverConnector} />
+              <AppointmentForm getUserId={this.getUserId} />
             )}
             isAuthenticated={this.state.isAuthenticated}
           />

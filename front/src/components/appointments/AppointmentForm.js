@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import { Card, CardContent, CardActions, CardHeader, option } from '@material-ui/core';
+import { Link, withRouter } from 'react-router-dom';
 import axios from 'axios';
 
 const url_specialties = 'http://localhost:5555/back/get_specialties';
@@ -88,6 +89,7 @@ class AppointmentForm extends React.Component {
     this.setState({
       selectedDate: event.target.value,
       disableDateSelector: false,
+      selectedTurnId: event.target.value,
     });
   };
 
@@ -127,7 +129,18 @@ class AppointmentForm extends React.Component {
 
   setAppointment = () => {
     console.log('Appointment set');
-    console.log(this.state.selectedDate);
+    console.log(this.state);
+    let turn = {user_id: this.props.getUserId(), turn_id: this.state.selectedDate};
+    let url = 'http://localhost:5555/back/new_appointment'
+    axios.post(url, { turn }).then(res => {
+      console.log(res);
+      if (res.status === 200) {
+        alert('Turno reservado!');
+      }
+      if (res.status === 205) {
+        alert('Turno ya tomado, elija otro por favor');
+      }
+    });
   };
 
   render() {
@@ -232,7 +245,6 @@ class AppointmentForm extends React.Component {
 
 AppointmentForm.propTypes = {
   classes: PropTypes.object.isRequired,
-  serverConnector: PropTypes.object,
 };
 
-export default withStyles(styles)(AppointmentForm);
+export default withStyles(styles)(withRouter(AppointmentForm));
