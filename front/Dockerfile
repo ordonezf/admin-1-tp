@@ -22,4 +22,4 @@ COPY . .
 RUN npm run build
 
 EXPOSE 5000
-CMD [ "serve", "-s", "build" ]
+CMD [ "npm", "start" ]

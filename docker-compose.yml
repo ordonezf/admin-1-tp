@@ -1,17 +1,17 @@
-version: '3'
+version: "3"
 
 services:
   back:
-    build: './back'
+    build: "./back"
     ports:
       - "8000:8000"
     volumes:
       - ./back/database/:/opt/backend/database/
 
   front:
-    build: './front'
+    build: "./front"
     ports:
-      - "5000:5000"
+      - "3000:3000"
 
   nginx:
     image: nginx:1.15.3

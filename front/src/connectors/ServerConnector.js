@@ -1,3 +1,11 @@
+import axios from 'axios';
+
+const url_specialties = 'http://localhost:5555/back/get_specialties';
+const url_physicians = 'http://localhost:5555/back/get_physicians';
+const url_dates = 'http://localhost:5555/back/get_dates';
+
+const success = 200
+
 const appointmentsInfo = {
   Cardiologia: {
     'Watson Juan': ['1995-12-17T03:24:00', '1995-12-17T03:24:00'],
@@ -30,7 +38,7 @@ const allspecialities = [
   },
 ];
 
-const allphisicians = [
+const allphysicians = [
   {
     value: 1123,
     label: 'Dr.Watson',
@@ -56,15 +64,21 @@ const someTakenAppExample = [
 
 class ServerConnector {
   getSpecialities = () => {
-    return Object.keys(appointmentsInfo);
+    axios.get(url_specialties).then(res => {
+        console.log(res);
+        console.log(res.data);
+        return res;
+    });
+        
+    //return Object.keys(appointmentsInfo);
   };
 
-  getPhisicians = speciality => {
+  getPhysicians = speciality => {
     return Object.keys(appointmentsInfo[speciality]);
   };
 
-  getDates = (speciality, phisician) => {
-    return appointmentsInfo[speciality][phisician];
+  getDates = (speciality, physicians) => {
+    return appointmentsInfo[speciality][physicians];
   };
 
   getAppointmentsInfo = () => {

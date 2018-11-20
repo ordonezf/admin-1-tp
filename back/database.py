@@ -2,6 +2,7 @@ import os
 import sqlite3
 from sqlite3 import Error
 import create_tables as ct
+import insert_into_tables as iit
 
 
 class DataBase(object):
@@ -14,6 +15,8 @@ class DataBase(object):
             self.conn = self.create_connection(db_file)
             for table_name in ct.create_tables:
                 self.create_table(table_name, ct.create_tables[table_name])
+            for table_name in iit.insert_into_tables:
+                self.modify_database(iit.insert_into_tables[table_name])
 
     def create_connection(self, db_file):
         """ create a database connection to the SQLite database
@@ -54,6 +57,6 @@ class DataBase(object):
             print(e)
             print(sql_query)
 
-    def modify_database(self, sql_query, payload):
-        cur = self.conn.cursor()
-        cur.execute(sql_query, payload)
+    def modify_database(self, sql_query, payload=''):
+        self.query_database(sql_query, payload)
+        self.conn.commit()
