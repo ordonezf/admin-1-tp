@@ -14,23 +14,22 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 
 let counter = 0;
-function createData(date, time, phisician, patient) {
+function createData(date, time, phisician) {
   counter += 1;
-  return { id: counter, date, time, phisician, patient };
+  return { id: counter, date, time, phisician };
 }
 
 class AppointmentListHead extends React.Component {
   state = {
     rows: [
-      { id: 'date', numeric: false, disablePadding: true, label: 'Date' },
-      { id: 'time', numeric: false, disablePadding: false, label: 'Time' },
+      { id: 'date', numeric: false, disablePadding: true, label: 'Fecha' },
+      { id: 'time', numeric: false, disablePadding: false, label: 'Hora' },
       {
         id: 'phisician',
         numeric: true,
         disablePadding: false,
-        label: 'Phisician',
+        label: 'Profesional',
       },
-      { id: 'patient', numeric: true, disablePadding: false, label: 'Patient' },
     ],
   };
 
@@ -81,11 +80,8 @@ AppointmentListHead.propTypes = {
 
 const styles = theme => ({
   root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-  },
-  table: {
-    minWidth: 1020,
+    width: '95%',
+    margin: '1em auto',
   },
   tableWrapper: {
     overflowX: 'auto',
@@ -97,17 +93,17 @@ class AppointmentList extends React.Component {
     order: 'asc',
     orderBy: 'date',
     data: [
-      createData('15/01/2018', '10:00AM', 'Dr.Brown', 'Patient A'),
-      createData('04/11/2018', '10:00AM', 'Dr.Brown', 'Patient B'),
-      createData('12/01/2018', '10:00AM', 'Dr.Brown', 'Patient C'),
-      createData('15/03/2018', '10:00AM', 'Dr.Strange', 'Patient D'),
-      createData('17/05/2018', '10:00AM', 'Dr.Brown', 'Patient E'),
-      createData('18/05/2018', '10:00AM', 'Dr.Brown', 'Patient F'),
-      createData('19/01/2019', '10:00AM', 'Dr.Strange', 'Patient G'),
-      createData('11/02/2019', '10:00AM', 'Dr.Strange', 'Patient H'),
-      createData('13/02/2019', '10:00AM', 'Dr.Brown', 'Patient I'),
-      createData('05/03/2018', '10:00AM', 'Dr.Strange', 'Patient J'),
-      createData('17/06/2018', '10:00AM', 'Dr.Brown', 'Patient K'),
+      createData('15/01/2018', '10:00AM', 'Dr.Brown'),
+      createData('04/11/2018', '10:00AM', 'Dr.Brown'),
+      createData('12/01/2018', '10:00AM', 'Dr.Brown'),
+      createData('15/03/2018', '10:00AM', 'Dr.Strange'),
+      createData('17/05/2018', '10:00AM', 'Dr.Brown'),
+      createData('18/05/2018', '10:00AM', 'Dr.Brown'),
+      createData('19/01/2019', '10:00AM', 'Dr.Strange'),
+      createData('11/02/2019', '10:00AM', 'Dr.Strange'),
+      createData('13/02/2019', '10:00AM', 'Dr.Brown'),
+      createData('05/03/2018', '10:00AM', 'Dr.Strange'),
+      createData('17/06/2018', '10:00AM', 'Dr.Brown'),
     ],
     page: 0,
     rowsPerPage: 5,
@@ -115,6 +111,8 @@ class AppointmentList extends React.Component {
     sartDate: '',
     endDate: null,
   };
+
+  getAppointments = () => {};
 
   desc = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -174,7 +172,7 @@ class AppointmentList extends React.Component {
   };
 
   render() {
-    let filteredItems = this.state.data.filter(listitem => {
+    const filteredItems = this.state.data.filter(listitem => {
       return (
         listitem.phisician
           .toLowerCase()
@@ -198,7 +196,7 @@ class AppointmentList extends React.Component {
           </Typography>
         </Toolbar>
         <div className={classes.tableWrapper}>
-          <Table className={classes.table} aria-labelledby="tableTitle">
+          <Table aria-labelledby="tableTitle">
             <AppointmentListHead
               order={order}
               orderBy={orderBy}
@@ -218,7 +216,6 @@ class AppointmentList extends React.Component {
                         {n.time}
                       </TableCell>
                       <TableCell numeric>{n.phisician}</TableCell>
-                      <TableCell numeric>{n.patient}</TableCell>
                     </TableRow>
                   );
                 })}
