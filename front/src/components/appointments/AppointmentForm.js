@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { Card, CardContent, CardActions, CardHeader } from '@material-ui/core';
+import { Card, CardContent, CardActions, CardHeader, option } from '@material-ui/core';
 import axios from 'axios';
 
 const url_specialties = 'http://localhost:5555/back/get_specialties';
@@ -49,6 +49,13 @@ class AppointmentForm extends React.Component {
   }
 
   selectSpeciality = event => {
+    if (event.target.value === 'emptyOpt') {
+      this.setState({
+        disablePhisicianSelector: true,
+        disableDateSelector: true,
+      });
+      return;
+    }
     console.log('selected speciality');
     this.getPhisicians(event.target.value);
     this.setState({
@@ -59,6 +66,12 @@ class AppointmentForm extends React.Component {
   };
 
   selectPhisician = event => {
+    if (event.target.value === 'emptyOpt') {
+      this.setState({
+        disableDateSelector: true,
+      });
+      return;
+    }
     console.log('selected phisician');
     this.getDates(event.target.value);
     this.setState({
@@ -68,6 +81,9 @@ class AppointmentForm extends React.Component {
   };
 
   selectDate = event => {
+    if (event.target.value === 'emptyOpt') {
+      return;
+    }
     console.log('selected date');
     this.setState({
       selectedDate: event.target.value,
@@ -116,7 +132,7 @@ class AppointmentForm extends React.Component {
 
   render() {
     const { classes } = this.props;
-
+    const emptyOption = <option key={'emptyOpt'} value={'emptyOpt'}>Seleccione una opcion</option>;
     if (!this.state.allSpecialitiesLoaded) {
       this.getSpecialities();
     }
@@ -138,6 +154,7 @@ class AppointmentForm extends React.Component {
             helperText="Por favor seleccione una especialidad"
             margin="normal"
           >
+            {emptyOption}
             {this.state.allSpecialitiesLoaded
               ? this.state.allSpecialities.data.map(speciality => (
                   <option key={speciality.value} value={speciality.id}>
@@ -163,6 +180,7 @@ class AppointmentForm extends React.Component {
               shrink: true,
             }}
           >
+            {emptyOption}
             {this.state.allPhisiciansLoaded
               ? this.state.allPhisicians.data.map(phisician => (
                   <option key={phisician.value} value={phisician.id}>
@@ -188,6 +206,7 @@ class AppointmentForm extends React.Component {
               shrink: true,
             }}
           >
+            {emptyOption}
             {this.state.allDatesLoaded
               ? this.state.allDates.data.map(date => (
                   <option key={date.value} value={date.id}>
