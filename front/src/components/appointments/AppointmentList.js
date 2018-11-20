@@ -165,6 +165,9 @@ class AppointmentList extends React.Component {
   cancelAppointment = appointment => event => {
     console.log('Cancelled turn:');
     console.log(appointment);
+    const newData = this.state.data.filter(n => n.id !== appointment.id);
+    console.log(newData);
+    this.setState({ data: newData });
   };
 
   render() {
