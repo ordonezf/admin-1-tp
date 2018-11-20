@@ -13,11 +13,12 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { Button } from '@material-ui/core';
+import axios from 'axios';
 
 let counter = 0;
-function createData(date, time, phisician) {
+function createData(date, time, physician) {
   counter += 1;
-  return { id: counter, date, time, phisician };
+  return { id: counter, date, time, physician };
 }
 
 class AppointmentListHead extends React.Component {
@@ -25,7 +26,8 @@ class AppointmentListHead extends React.Component {
     rows: [
       { id: 'date', numeric: false, label: 'Fecha' },
       { id: 'time', numeric: false, label: 'Hora' },
-      { id: 'phisician', numeric: false, label: 'Profesional' },
+      { id: 'specialty', numeric: false, label: 'Practica'},
+      { id: 'physician', numeric: false, label: 'Profesional' },
     ],
   };
 
@@ -98,6 +100,7 @@ class AppointmentList extends React.Component {
   state = {
     order: 'asc',
     orderBy: 'date',
+    get_turns: false,
     data: [
       createData('15/01/2018', '10:00AM', 'Dr.Brown'),
       createData('04/11/2018', '10:00AM', 'Dr.Brown'),
@@ -115,7 +118,20 @@ class AppointmentList extends React.Component {
     rowsPerPage: 5,
   };
 
-  getAppointments = () => {};
+  getAppointments = () => {
+    console.log('Get appointments for user: ' + this.props.getUserId());
+    let user_id = this.props.getUserId();
+    let url = 'http://localhost:5555/back/get_appointments/'
+    axios.get(url + user_id).then(res => {
+      console.log(res);
+      if (res.status === 200) {
+        this.setState({ data: res.data, get_turns: true });
+      }
+      if (res.status === 205) {
+        alert('No hay turnos reservados!');
+      }
+    });
+  };
 
   desc = (a, b, orderBy) => {
     if (b[orderBy] < a[orderBy]) {
@@ -162,10 +178,19 @@ class AppointmentList extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  cancelAppointment = appointment => event => {
+  cancelAppointment = appo => {
     console.log('Cancelled turn:');
-    console.log(appointment);
-    const newData = this.state.data.filter(n => n.id !== appointment.id);
+    console.log(appo);
+    let appointment = {appointment_id: appo.id, turn_id: appo.turn_id};
+    let url = 'http://localhost:5555/back/delete_appointment'
+    axios.post(url, { appointment }).then(res => {
+      console.log(res);
+      if (res.status === 200) {
+        alert('Turno con el ' + appo.physician + ' eliminado')
+      }
+    });
+
+    const newData = this.state.data.filter(n => n.id !== appo.id);
     console.log(newData);
     this.setState({ data: newData });
   };
@@ -176,6 +201,9 @@ class AppointmentList extends React.Component {
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
+    if (!this.state.get_turns) {
+      this.getAppointments();
+    }
     return (
       <Paper className={classes.root}>
         <Toolbar>
@@ -200,10 +228,11 @@ class AppointmentList extends React.Component {
                     <TableRow hover key={n.id}>
                       <TableCell>{n.date}</TableCell>
                       <TableCell>{n.time}</TableCell>
-                      <TableCell>{n.phisician}</TableCell>
+                      <TableCell>{n.specialty}</TableCell>
+                      <TableCell>{n.physician}</TableCell>
                       <TableCell className={classes.headCell}>
                         <Button
-                          onClick={this.cancelAppointment(n)}
+                          onClick={this.cancelAppointment.bind(this, n)}
                           color="secondary"
                         >
                           Cancelar turno

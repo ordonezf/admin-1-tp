@@ -33,10 +33,10 @@ class SearchAppointments extends React.Component {
 
   handleSearch = async value => {
     let results;
-    // const url = 'http://localhost:5555/back/search_turns?search=';
-    const url = 'https://jsonplaceholder.typicode.com/users/';
+    const url = 'http://localhost:5555/back/search_turns?search=';
     try {
-      results = await axios.get(url);
+      results = await axios.get(url + value);
+      console.log('Turnos disponibles!')
     } catch (err) {
       console.log(err);
     }
@@ -75,7 +75,6 @@ class SearchAppointments extends React.Component {
                   <TableCell>Práctica</TableCell>
                   <TableCell>Médico</TableCell>
                   <TableCell>Horario</TableCell>
-                  <TableCell>Anotarse</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -88,16 +87,6 @@ class SearchAppointments extends React.Component {
                       <TableCell>{row.practice}</TableCell>
                       <TableCell>{row.doctor}</TableCell>
                       <TableCell>{row.time}</TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          className={classes.button}
-                          onClick={this.handleClick}
-                        >
-                          Anotarse
-                        </Button>
-                      </TableCell>
                     </TableRow>
                   );
                 })}

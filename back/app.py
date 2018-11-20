@@ -16,13 +16,14 @@ def root():
     return 'Go to /search_turns'
 
 
-@app.route('/search_turns/<search>', methods=['GET'])
-def search_turns(search):
+@app.route('/search_turns', methods=['GET'])
+def search_turns():
+    search = request.args.get('search')
     app.logger.info('Hit /search_turns/%s', search)
     sql = '''
     select
         t.id,
-        s.name as specialty,
+        s.name,
         d.first_name || ' ' || d.last_name as doctor_name,
         t.time
     from turns t
@@ -32,7 +33,8 @@ def search_turns(search):
     where t.available = 'true'
         and (s.name like '%{key}%' or
              d.first_name like '%{key}%' or
-             d.last_name like '%{key}%'
+             d.last_name like '%{key}%' or
+             t.time like '%{key}%'
              )
     order by t.time desc
     ;
@@ -293,6 +295,47 @@ def new_appointment():
     app.logger.info('New appointment')
     return make_response('Successfully created appointment!', 200)
 
+
+@app.route('/get_appointments/<user_id>', methods=['GET'])
+def get_appointments(user_id):
+    app.logger.info('Hit /get_appointments/%s', user_id)
+    sql = '''
+    select
+        ap.id,
+        t.time,
+        'Dr. ' || d.last_name,
+        s.name,
+        t.id
+    from appointments ap
+    join turns t on t.id = ap.turn_id
+    join doctors_specialties ds on ds.id = t.doctor_specialty_id
+    join specialties s on s.id = ds.specialty_id
+    join doctors d on d.id = ds.doctor_id
+    where ap.user_id = ?
+        and ap.deleted_at is null
+    order by ap.created_at desc
+    ;
+    '''
+    res = db.query_database(sql, [user_id])
+    dic = [{'id': x[0], 'date': x[1].split(' ')[0], 'time': x[1].split(' ')[1], 'physician': x[2], 'specialty': x[3], 'turn_id': x[4]} for x in res]
+
+    return make_response(jsonify(dic), 200)
+
+
+@app.route('/delete_appointment', methods=['POST'])
+def delete_appointment():
+    app.logger.info('Hit /delete_appointment')
+    data = request.get_json()
+    app.logger.info(data)
+    now = dt.now().strftime('%Y-%m-%d %H:%M')
+    data = data['appointment']
+    turn_id = [data['turn_id']]
+    db.modify_database('''update turns set available = "true" where id = ? ''', turn_id)
+    app.logger.info('Turn is available for other people')
+    payload = [now, data['appointment_id']]
+    db.modify_database('''update appointments set deleted_at = ? where id = ?''', payload)
+
+    return make_response('Successfully deleted appointment!', 200)
 
 if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
