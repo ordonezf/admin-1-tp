@@ -23,7 +23,6 @@ Trabajo practico grupal de la materia Administración y Control de Proyectos Inf
         * react
         * axios
     * nginx
-    * sqlite
 * Docker-compose
 
 ### Con Docker y Docker Compose
